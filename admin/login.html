@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Autentikasi - Si Debar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* SOFT RESET */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Outfit', sans-serif; 
+    }
+    
+    body { 
+      background-color: #0b0f19; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      padding: 24px;
+    }
+    
+    /* MODERN LUXURY CARD */
+    .login-container { 
+      background: #ffffff; 
+      width: 100%; 
+      max-width: 400px; 
+      padding: 48px 36px; 
+      border-radius: 28px; 
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* TYPOGRAPHY SYSTEM */
+    .brand { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    
+    .brand h1 { 
+      font-size: 36px; 
+      font-weight: 800; 
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, #10b981, #0284c7); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    }
+    
+    .brand p { 
+      font-size: 12px; 
+      color: #64748b; 
+      margin-top: 6px; 
+      font-weight: 700; 
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    
+    /* ELEGANT FORM INPUTS */
+    .input-group { 
+      margin-bottom: 24px; 
+    }
+    
+    .input-group label { 
+      display: block; 
+      margin-bottom: 8px; 
+      font-size: 12px; 
+      font-weight: 700; 
+      color: #475569; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .input-group input { 
+      width: 100%; 
+      padding: 15px 18px; 
+      border-radius: 16px; 
+      border: 1px solid #e2e8f0; 
+      font-size: 14px; 
+      font-weight: 500;
+      color: #0f172a;
+      outline: none; 
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+      background: #f8fafc; 
+    }
+    
+    /* CUSTOM SELECT DROPDOWN (PILIHAN ROLE MODERN) */
+    .input-group select {
+      width: 100%; 
+      padding: 15px 40px 15px 18px; 
+      border-radius: 16px; 
+      border: 1px solid #e2e8f0; 
+      font-size: 14px; 
+      font-weight: 600; 
+      color: #0f172a;
+      outline: none; 
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+      background: #f8fafc;
+      
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+      cursor: pointer;
+    }
+    
+    /* INPUT & SELECT INTERACTIONS */
+    .input-group input:focus, 
+    .input-group select:focus { 
+      border-color: #10b981; 
+      background: #ffffff; 
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); 
+    }
+    
+    .input-group input::placeholder {
+      color: #94a3b8;
+    }
+    
+    /* PREMIUM BUTTON */
+    .btn-login { 
+      width: 100%; 
+      padding: 16px; 
+      border: none; 
+      border-radius: 16px; 
+      background: linear-gradient(135deg, #10b981, #059669); 
+      color: #ffffff; 
+      font-size: 15px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      margin-top: 12px; 
+      transition: all 0.25s ease; 
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-login:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 12px 24px -5px rgba(16, 185, 129, 0.45); 
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    /* FOOTER SUBTLE TEXT */
+    .footer-text { 
+      text-align: center; 
+      margin-top: 36px; 
+      font-size: 11px; 
+      font-weight: 600;
+      color: #94a3b8; 
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="brand">
+      <h1>LOGIN</h1>
+      <p>Sistem Presensi Akademik</p>
+    </div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="input-group">
+        <label>Hak Akses Portal</label>
+        <select id="role">
+          <option value="admin">Admin</option>
+          <option value="dosen">Dosen</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Masukkan Username" required autocomplete="off">
+      </div>
+
+      <div class="input-group">
+        <label>Kata Sandi</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-login">Masuk ke Portal</button>
+    </form>
+
+    <p class="footer-text">© 2026</p>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault(); 
+      
+      const role = document.getElementById("role").value;
+      const username = document.getElementById("username").value.trim().toLowerCase(); 
+      const password = document.getElementById("password").value;
+
+      if (role === "admin") {
+        if (username === "admin" && password === "admin123") {
+          alert("Autentikasi Berhasil. Selamat Datang Admin.");
+          window.location.href = "admin-dashboard.html"; 
+        } else {
+          alert("ID Pengguna atau Kata Sandi Admin Tidak Valid!");
+        }
+      } 
+      else if (role === "dosen") {
+        if (username === "dosen" && password === "dosen123") {
+          alert("Autentikasi Berhasil. Selamat Datang Dosen Pengajar.");
+          window.location.href = "dashboard-dosen.html"; 
+        } else {
+          alert("ID Pengguna atau Kata Sandi Dosen Tidak Valid!");
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

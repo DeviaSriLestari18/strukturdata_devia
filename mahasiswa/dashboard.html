@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AkademiKu | Dashboard Mahasiswa - Analisis Kehadiran Kelas</title>
+    <!-- Font Awesome 6 (Gratis Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter untuk tampilan modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN untuk grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f0f4f9;
+            overflow-x: hidden;
+        }
+
+        /* Layout Utama */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ========= SIDEBAR MODERN ========= */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            box-shadow: 8px 0 25px -12px rgba(0, 0, 0, 0.08);
+            padding: 2rem 1.5rem;
+            transition: all 0.25s ease;
+            z-index: 10;
+            border-right: 1px solid rgba(37, 99, 235, 0.08);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9eef3;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: 0 6px 12px -6px rgba(37, 99, 235, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.45rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(120deg, #1E2A5E, #2563eb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-top: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-weight: 500;
+            color: #334155;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            color: #5b6e8c;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(95deg, #eff6ff, #e0edff);
+            color: #1e40af;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+        }
+
+        .nav-item.active i {
+            color: #2563eb;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            color: #1e293b;
+        }
+
+        .logout-item {
+            margin-top: 2rem;
+            border-top: 1px solid #eef2f8;
+            padding-top: 1.2rem;
+            color: #b91c1c;
+        }
+
+        .logout-item i {
+            color: #dc2626;
+        }
+
+        /* ========= MAIN CONTENT ========= */
+        .main-content {
+            flex: 1;
+            padding: 1.8rem 2rem;
+            overflow-x: auto;
+        }
+
+        /* Header premium */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.2rem 1.8rem;
+            border-radius: 28px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(37, 99, 235, 0.12);
+        }
+
+        .greeting h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .greeting p {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: #f8fafc;
+            padding: 8px 20px 8px 16px;
+            border-radius: 60px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .avatar {
+            background: linear-gradient(145deg, #2563eb, #3b82f6);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 14px -6px rgba(37, 99, 235, 0.3);
+        }
+
+        .info-badge {
+            text-align: right;
+        }
+
+        .info-badge .nim {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+
+        .info-badge .kelas {
+            font-size: 0.75rem;
+            color: #2563eb;
+            background: #eef4ff;
+            padding: 3px 12px;
+            border-radius: 40px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* Card styling umum */
+        .card-modern {
+            background: white;
+            border-radius: 28px;
+            padding: 1.4rem 1.6rem;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .card-modern:hover {
+            box-shadow: 0 18px 30px -12px rgba(37, 99, 235, 0.12);
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-info h4 {
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5b6e8c;
+        }
+
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+
+        .hadir-icon { color: #10b981; }
+        .izin-icon { color: #f59e0b; }
+        .sakit-icon { color: #8b5cf6; }
+        .alpha-icon { color: #ef4444; }
+
+        /* card persentase circular */
+        .progress-card {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .circle-svg {
+            width: 130px;
+            height: 130px;
+        }
+
+        .percentage-text {
+            font-size: 2rem;
+            font-weight: 800;
+            fill: #1e293b;
+        }
+
+        .label-persen {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .matkul-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 1.2rem;
+            margin-top: 0.8rem;
+        }
+
+        .matkul-item {
+            background: #f9fbfe;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid #2563eb;
+        }
+
+        .nilai-mini {
+            display: flex;
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 0.7rem 1rem;
+            border-radius: 18px;
+            margin-bottom: 0.6rem;
+        }
+
+        .riwayat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .riwayat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0.2rem;
+            border-bottom: 1px dashed #eef2f8;
+        }
+
+        .badge-status {
+            background: #eef2ff;
+            padding: 4px 14px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        /* Responsive */
+        @media (max-width: 880px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                padding: 1rem;
+            }
+            .app-container {
+                flex-direction: column;
+            }
+            .nav-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-item {
+                padding: 6px 14px;
+            }
+            .logout-item {
+                margin-top: 0;
+                border-top: none;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-badge {
+                align-self: flex-start;
+            }
+        }
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+        button, .nav-item {
+            user-select: none;
+        }
+        canvas {
+            max-height: 280px;
+            width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="logo-text">AkademiKu</div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+            </div>
+            <div class="nav-item" data-page="absensi">
+                <i class="fas fa-calendar-check"></i> <span>Absensi Saya</span>
+            </div>
+            <div class="nav-item" data-page="nilai">
+                <i class="fas fa-star"></i> <span>Nilai Saya</span>
+            </div>
+            <div class="nav-item" data-page="profil">
+                <i class="fas fa-user-circle"></i> <span>Profil</span>
+            </div>
+            <div class="nav-item logout-item" data-page="logout">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </div>
+        </div>
+        <footer style="margin-top: 2rem; font-size: 0.7rem; text-align: center; color: #8ba0bc;">© Analisis Kehadiran</footer>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main-content">
+        <!-- Header dinamis (sama untuk semua halaman) -->
+        <div class="dashboard-header" id="dynamicHeader">
+            <!-- akan diisi JS dengan data mahasiswa -->
+        </div>
+
+        <!-- Konten dinamis utama -->
+        <div id="pageContent">
+            <!-- Dashboard akan di-render oleh JS -->
+        </div>
+    </main>
+</div>
+
+<script>
+    // ---------- DATA MAHASISWA & SISTEM (fokus analisis kehadiran) ----------
+    const mahasiswa = {
+        nama: "Muhammad Al Farizi",
+        nim: "2201010203",
+        kelas: "IF-5",
+        prodi: "S1 Informatika",
+        fotoInisial: "MA",
+        totalHadir: 39,
+        totalIzin: 2,
+        totalSakit: 1,
+        totalAlpha: 0,
+        totalPertemuan: 42,   // hadir+izin+sakit+alpha = 42
+    };
+
+    // Persentase otomatis
+    const persentaseKehadiran = ((mahasiswa.totalHadir / mahasiswa.totalPertemuan) * 100).toFixed(1);
+
+    // Mata kuliah yang diambil
+    const mataKuliahList = [
+        { nama: "Pemrograman Web", dosen: "Dr. Andi Pratama", nilai: 90 },
+        { nama: "Basis Data", dosen: "Dr. Budi Santoso", nilai: 85 },
+        { nama: "Pemrograman Mobile", dosen: "Dr. Citra Dewi", nilai: 88 }
+    ];
+
+    // Riwayat absensi lengkap (untuk halaman Absensi Saya)
+    const riwayatAbsensiLengkap = [
+        { tanggal: "01 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "02 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "03 Juni 2025", matkul: "Basis Data", status: "Hadir" },
+        { tanggal: "04 Juni 2025", matkul: "Pemrograman Mobile", status: "Izin" },
+        { tanggal: "05 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "07 Juni 2025", matkul: "Basis Data", status: "Hadir" },
+        { tanggal: "08 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "09 Juni 2025", matkul: "Pemrograman Mobile", status: "Izin" },
+        { tanggal: "10 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "12 Juni 2025", matkul: "Basis Data", status: "Hadir" },
+        { tanggal: "14 Juni 2025", matkul: "Pemrograman Mobile", status: "Sakit" },
+        { tanggal: "15 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+        { tanggal: "17 Juni 2025", matkul: "Basis Data", status: "Hadir" },
+        { tanggal: "18 Juni 2025", matkul: "Pemrograman Mobile", status: "Hadir" },
+        { tanggal: "20 Juni 2025", matkul: "Pemrograman Web", status: "Hadir" },
+    ];
+
+    // 5 riwayat terbaru untuk dashboard
+    const riwayatTerbaru = riwayatAbsensiLengkap.slice(-5).reverse();
+
+    // Variabel chart instance
+    let kehadiranChart = null;
+
+    // Fungsi render header (menampilkan nama, foto, NIM, kelas)
+    function renderHeader() {
+        const headerDiv = document.getElementById('dynamicHeader');
+        headerDiv.innerHTML = `
+            <div class="greeting">
+                <h1>Halo, ${mahasiswa.nama} 👋</h1>
+                <p>Selamat Datang di Sistem Analisis Kehadiran Kelas</p>
+            </div>
+            <div class="profile-badge">
+                <div class="avatar">${mahasiswa.fotoInisial}</div>
+                <div class="info-badge">
+                    <div class="nim">${mahasiswa.nim}</div>
+                    <div class="kelas">📚 ${mahasiswa.kelas}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Progress circle SVG dinamis (persentase)
+    function renderProgressCircle(percentage) {
+        const radius = 50;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (percentage / 100) * circumference;
+        return `
+            <svg class="circle-svg" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="8" />
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#2563eb" stroke-width="8" 
+                    stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"
+                    transform="rotate(-90 60 60)" />
+                <text x="60" y="70" text-anchor="middle" class="percentage-text" dominant-baseline="middle" font-size="22" font-weight="bold" fill="#0f172a">${percentage}%</text>
+                <text x="60" y="90" text-anchor="middle" class="label-persen" font-size="9" fill="#5b6e8c">Kehadiran</text>
+            </svg>
+        `;
+    }
+
+    // Dashboard utama (berisi semua komponen: statistik, persentase, matkul, grafik, nilai ringkas, riwayat)
+    function renderDashboard() {
+        // 4 card statistik
+        const statsHTML = `
+            <div class="grid-stats">
+                <div class="card-modern stat-card"><div class="stat-info"><h4>Total Hadir</h4><div class="stat-number">${mahasiswa.totalHadir}</div></div><div class="stat-icon hadir-icon"><i class="fas fa-check-circle fa-2x"></i></div></div>
+                <div class="card-modern stat-card"><div class="stat-info"><h4>Total Izin</h4><div class="stat-number">${mahasiswa.totalIzin}</div></div><div class="stat-icon izin-icon"><i class="fas fa-envelope-open-text fa-2x"></i></div></div>
+                <div class="card-modern stat-card"><div class="stat-info"><h4>Total Sakit</h4><div class="stat-number">${mahasiswa.totalSakit}</div></div><div class="stat-icon sakit-icon"><i class="fas fa-thermometer-half fa-2x"></i></div></div>
+                <div class="card-modern stat-card"><div class="stat-info"><h4>Total Alpha</h4><div class="stat-number">${mahasiswa.totalAlpha}</div></div><div class="stat-icon alpha-icon"><i class="fas fa-times-circle fa-2x"></i></div></div>
+            </div>
+        `;
+
+        // Card persentase kehadiran dengan progress circle
+        const percent = parseFloat(persentaseKehadiran);
+        const progressCircleSVG = renderProgressCircle(percent);
+        const persentaseHTML = `
+            <div class="card-modern" style="margin-bottom: 2rem;">
+                <div class="progress-card">
+                    <div><h3 style="font-weight: 600;">📊 Persentase Kehadiran</h3><p style="color:#475569">Total pertemuan: ${mahasiswa.totalPertemuan} sesi</p></div>
+                    <div>${progressCircleSVG}</div>
+                </div>
+            </div>
+        `;
+
+        // Mata Kuliah yang Diambil
+        let matkulHTML = `<div class="card-modern" style="margin-bottom: 2rem;"><h3 style="margin-bottom: 1rem;">📖 Mata Kuliah yang Diambil</h3><div class="matkul-grid">`;
+        mataKuliahList.forEach(mk => {
+            matkulHTML += `<div class="matkul-item"><strong>${mk.nama}</strong><br><span style="font-size:0.8rem; color:#4b5563;">Dosen: ${mk.dosen}</span></div>`;
+        });
+        matkulHTML += `</div></div>`;
+
+        // Grafik Kehadiran (canvas akan diinisialisasi setelah dimasukkan)
+        const grafikHTML = `<div class="card-modern" style="margin-bottom: 2rem;"><h3 style="margin-bottom: 1rem;">📈 Statistik Kehadiran</h3><canvas id="chartKehadiran" width="400" height="200" style="max-height:280px"></canvas></div>`;
+
+        // Nilai Saya (card ringkas)
+        let nilaiRingkasHTML = `<div class="card-modern" style="margin-bottom: 2rem;"><h3 style="margin-bottom: 1rem;">⭐ Nilai Saya</h3>`;
+        mataKuliahList.forEach(mk => {
+            nilaiRingkasHTML += `<div class="nilai-mini"><span>${mk.nama}</span><strong style="color:#2563eb;">${mk.nilai}</strong></div>`;
+        });
+        nilaiRingkasHTML += `</div>`;
+
+        // Riwayat Absensi Terbaru (5 terakhir)
+        let riwayatHTML = `<div class="card-modern"><h3 style="margin-bottom: 1rem;">📋 Riwayat Absensi Terbaru</h3><div class="riwayat-list">`;
+        riwayatTerbaru.forEach(ab => {
+            let bgStatus = ab.status === 'Hadir' ? '#e0f2e9' : (ab.status === 'Izin' ? '#fff0e0' : (ab.status === 'Sakit' ? '#ede9fe' : '#fee2e2'));
+            let colorStatus = ab.status === 'Hadir' ? '#15803d' : (ab.status === 'Izin' ? '#b45309' : (ab.status === 'Sakit' ? '#6d28d9' : '#b91c1c'));
+            riwayatHTML += `<div class="riwayat-item"><span>${ab.tanggal} · ${ab.matkul}</span><span style="background:${bgStatus}; padding:2px 12px; border-radius:30px; font-size:0.7rem; font-weight:600; color:${colorStatus}">${ab.status}</span></div>`;
+        });
+        riwayatHTML += `</div></div>`;
+
+        const fullDashboard = `
+            ${statsHTML}
+            ${persentaseHTML}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                ${matkulHTML}
+                ${nilaiRingkasHTML}
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                ${grafikHTML}
+                ${riwayatHTML}
+            </div>
+        `;
+        document.getElementById('pageContent').innerHTML = fullDashboard;
+
+        // Inisialisasi grafik Chart.js
+        const ctx = document.getElementById('chartKehadiran').getContext('2d');
+        if (kehadiranChart) kehadiranChart.destroy();
+        kehadiranChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Hadir', 'Izin', 'Sakit', 'Alpha'],
+                datasets: [{
+                    label: 'Jumlah Kejadian',
+                    data: [mahasiswa.totalHadir, mahasiswa.totalIzin, mahasiswa.totalSakit, mahasiswa.totalAlpha],
+                    backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
+                    borderRadius: 12,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'top', labels: { font: { size: 12 } } },
+                    tooltip: { backgroundColor: '#0f172a' }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#eef2f8' }, title: { display: true, text: 'Frekuensi' } },
+                    x: { grid: { display: false }, ticks: { font: { weight: '500' } } }
+                }
+            }
+        });
+    }
+
+    // HALAMAN ABSENSI SAYA (riwayat lengkap semua kehadiran)
+    function renderAbsensiSaya() {
+        let rows = '';
+        riwayatAbsensiLengkap.forEach(ab => {
+            let statusClass = ab.status === 'Hadir' ? 'badge-status' : (ab.status === 'Izin' ? 'badge-status' : (ab.status === 'Sakit' ? 'badge-status' : 'badge-status'));
+            let bgColor = ab.status === 'Hadir' ? '#dff9e6' : (ab.status === 'Izin' ? '#fff0db' : (ab.status === 'Sakit' ? '#e9e3ff' : '#ffe0e0'));
+            rows += `
+                <div style="background: ${bgColor}; border-radius: 20px; padding: 0.9rem 1.2rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem;">
+                    <div><strong>${ab.tanggal}</strong><br><span style="font-size:0.75rem; color:#475569;">${ab.matkul}</span></div>
+                    <div><span style="background:white; padding: 0.2rem 1rem; border-radius: 40px; font-weight:600; color:${ab.status === 'Hadir' ? '#2b6e3c' : (ab.status === 'Izin' ? '#c46b0a' : (ab.status === 'Sakit' ? '#5a3ca0' : '#b91c1c'))}">${ab.status}</span></div>
+                </div>
+            `;
+        });
+        const html = `
+            <div class="card-modern">
+                <h2 style="margin-bottom: 1.2rem;"><i class="fas fa-calendar-alt" style="margin-right: 12px; color:#2563eb;"></i> Riwayat Absensi Lengkap</h2>
+                <p style="margin-bottom: 1rem; color: #4b5563;">Semua catatan kehadiran mata kuliah semester ini</p>
+                <div style="max-height: 550px; overflow-y: auto; padding-right: 5px;">${rows}</div>
+            </div>
+        `;
+        document.getElementById('pageContent').innerHTML = html;
+        if (kehadiranChart) { kehadiranChart.destroy(); kehadiranChart = null; }
+    }
+
+    // HALAMAN NILAI SAYA (detail nilai per mata kuliah)
+    function renderNilaiSaya() {
+        let nilaiItems = '';
+        mataKuliahList.forEach(mk => {
+            nilaiItems += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #f9fbfe; border-radius: 24px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; border: 1px solid rgba(37,99,235,0.1);">
+                    <div><i class="fas fa-graduation-cap" style="color:#2563eb; margin-right: 12px;"></i> <strong style="font-size: 1rem;">${mk.nama}</strong><br><span style="font-size: 0.75rem;">Dosen: ${mk.dosen}</span></div>
+                    <div><span style="background: #2563eb10; padding: 8px 18px; border-radius: 50px; font-weight: 800; font-size: 1.4rem; color:#1e3a8a;">${mk.nilai}</span></div>
+                </div>
+            `;
+        });
+        const html = `
+            <div class="card-modern">
+                <h2 style="margin-bottom: 1rem;"><i class="fas fa-chart-simple"></i> Nilai Akhir Mata Kuliah</h2>
+                <p style="margin-bottom: 1.5rem;">Nilai berdasarkan komponen kehadiran, tugas, UTS & UAS (sistem akademik)</p>
+                ${nilaiItems}
+                <div style="margin-top: 1rem; background:#f1f5f9; border-radius: 18px; padding: 1rem; text-align: center; font-size:0.8rem; color:#334155;">✅ Kehadiran berpengaruh pada nilai akhir & analisis prestasi.</div>
+            </div>
+        `;
+        document.getElementById('pageContent').innerHTML = html;
+        if (kehadiranChart) { kehadiranChart.destroy(); kehadiranChart = null; }
+    }
+
+    // HALAMAN PROFIL MAHASISWA
+    function renderProfil() {
+        const html = `
+            <div class="card-modern" style="max-width: 650px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div class="avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 0.8rem;">${mahasiswa.fotoInisial}</div>
+                    <h2>${mahasiswa.nama}</h2>
+                    <p style="color:#2563eb;">Mahasiswa Aktif · Semester Ganjil 2025/2026</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1rem; background:#fafcff; border-radius: 28px; padding: 1.2rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px;"><span style="font-weight:500;">NIM</span><span>${mahasiswa.nim}</span></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px;"><span style="font-weight:500;">Kelas</span><span>${mahasiswa.kelas}</span></div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px;"><span style="font-weight:500;">Program Studi</span><span>${mahasiswa.prodi}</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span style="font-weight:500;">Total Kehadiran Semester</span><span>${mahasiswa.totalHadir} / ${mahasiswa.totalPertemuan} (${persentaseKehadiran}%)</span></div>
+                </div>
+                <div style="margin-top: 1.5rem; text-align: center; font-size:0.7rem; color:#6c86a3;">Sistem Analisis Kehadiran Kelas · Pemantauan Akademik</div>
+            </div>
+        `;
+        document.getElementById('pageContent').innerHTML = html;
+        if (kehadiranChart) { kehadiranChart.destroy(); kehadiranChart = null; }
+    }
+
+    // Logout Handler
+    function handleLogout() {
+        if(confirm("Apakah Anda yakin ingin logout?")) {
+            alert("Anda telah logout. (Simulasi - arahkan ke halaman login)");
+            // Di presentasi bisa menjelaskan integrasi dengan backend.
+        }
+    }
+
+    // Navigasi Sidebar
+    function initNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const page = item.getAttribute('data-page');
+                // update active class
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                if (page === 'dashboard') {
+                    renderDashboard();
+                } else if (page === 'absensi') {
+                    renderAbsensiSaya();
+                } else if (page === 'nilai') {
+                    renderNilaiSaya();
+                } else if (page === 'profil') {
+                    renderProfil();
+                } else if (page === 'logout') {
+                    handleLogout();
+                    // setelah logout bisa non-aktif, tapi agar tidak error kita tetap di dashboard? lebih baik tetap dashboard
+                    renderDashboard();
+                    document.querySelector('.nav-item[data-page="dashboard"]').classList.add('active');
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    }
+
+    // Inisialisasi awal
+    function init() {
+        renderHeader();
+        renderDashboard();   // default dashboard
+        initNavigation();
+    }
+
+    init();
+</script>
+</body>
+</html>

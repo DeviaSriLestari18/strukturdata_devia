@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Mahasiswa - Admin Pusat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+            display: flex;
+            min-height: 100vh;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: #0b0f19;
+            color: white;
+            padding: 32px 24px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 48px);
+        }
+
+        .logo {
+            margin-bottom: 40px;
+            padding-left: 8px;
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo p {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: 100%;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: #94a3b8;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu a.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .menu .logout {
+            margin-top: auto;
+            color: #f87171;
+        }
+
+        /* MAIN */
+        .main-content {
+            margin-left: 304px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .panel-box {
+            background: white;
+            padding: 28px;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .panel-box h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* FORM INPUT */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
+        }
+
+        .btn-submit {
+            border: none;
+            color: white;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            padding: 15px 32px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            font-size: 14px;
+        }
+
+        .btn-edit {
+            border: none;
+            color: white;
+            background: #0284c7;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .btn-delete {
+            border: none;
+            color: white;
+            background: #ef4444;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        table th {
+            background: #f8fafc;
+            color: #64748b;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: left;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <h2>ADMIN</h2>
+            <!-- <p>Sistem Kontrol Utama</p> -->
+        </div>
+        <div class="menu">
+            <a href="admin-dashboard.html">🏠 Dashboard Utama</a>
+            <a href="admin-dosen.html">👨‍🏫 Kelola Data Dosen</a>
+            <a href="admin-mahasiswa.html" class="active">👨‍🎓 Kelola Data Mahasiswa</a>
+            <a href="login.html" class="logout">🚪 Keluar Sistem</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="panel-box">
+            <h2 id="formTitle">Pendaftaran Mahasiswa Baru</h2>
+            <input type="hidden" id="editIndex" value="">
+            <div class="form-grid">
+                <div class="input-group"><label>Nomor Induk Mahasiswa (NIM)</label><input type="text" id="nim"
+                        placeholder="Masukkan NIM"></div>
+                <div class="input-group"><label>Nama Lengkap Anggota</label><input type="text" id="namaMhs"
+                        placeholder="Masukkan Nama Lengkap"></div>
+                <div class="input-group">
+                    <label>Plotting Kelas</label>
+                    <select id="kelasPlot">
+                        <option value="Kelas A">Kelas A</option>
+                        <option value="Kelas B">Kelas B</option>
+                        <option value="Kelas C">Kelas C</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-submit" id="btnSave" onclick="simpanMhs()">➕ Daftarkan Mahasiswa</button>
+        </div>
+
+        <div class="panel-box">
+            <h2>Manajemen Anggota Akademik</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>NIM</th>
+                        <th>Nama Lengkap</th>
+                        <th>Kelas</th>
+                        <th style="text-align: center; width: 160px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="mhsTable">
+                    <tr>
+                <tbody id="mhsTable">
+                    <tr>
+                        <td><b>230101001</b></td>
+                        <td>Adi Nugroho</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101002</b></td>
+                        <td>Amalia Saputri</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101003</b></td>
+                        <td>Bagus Setiawan</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101004</b></td>
+                        <td>Citra Lestari</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101005</b></td>
+                        <td>Dimas Prayoga</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101006</b></td>
+                        <td>Dinda Rahmawati</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101007</b></td>
+                        <td>Eko Prasetyo</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101008</b></td>
+                        <td>Farhan Syahputra</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101009</b></td>
+                        <td>Fitri Handayani</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101010</b></td>
+                        <td>Gilang Ramadhan</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101011</b></td>
+                        <td>Hafiz Anshori</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101012</b></td>
+                        <td>Indah Permatasari</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101013</b></td>
+                        <td>Joko Susilo</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101014</b></td>
+                        <td>Kurniawan Dwi</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101015</b></td>
+                        <td>Larasati Putri</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101016</b></td>
+                        <td>Muhammad Rizky</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101017</b></td>
+                        <td>Nadia Utami</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101018</b></td>
+                        <td>Oki Sanjaya</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101019</b></td>
+                        <td>Putri Wulandari</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101020</b></td>
+                        <td>Rian Mahendra</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101021</b></td>
+                        <td>Siti Aminah</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101022</b></td>
+                        <td>Taufik Hidayat</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101023</b></td>
+                        <td>Utami Dewi</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101024</b></td>
+                        <td>Vino Bastian</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101025</b></td>
+                        <td>Wahyu Hidayat</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101026</b></td>
+                        <td>Yayan Ruhiyan</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101027</b></td>
+                        <td>Zaskia Mecca</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101028</b></td>
+                        <td>Aditya Putra</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101029</b></td>
+                        <td>Bella Safira</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101030</b></td>
+                        <td>Candra Wijaya</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101031</b></td>
+                        <td>Dewi Lestari</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101032</b></td>
+                        <td>Eka Ramdani</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101033</b></td>
+                        <td>Ferry Salim</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101034</b></td>
+                        <td>Gita Gutawa</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101035</b></td>
+                        <td>Hendra Setiawan</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101036</b></td>
+                        <td>Irfan Bachdim</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101037</b></td>
+                        <td>Jessica Mila</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101038</b></td>
+                        <td>Kevin Sanjaya</td>
+                        <td>Kelas A</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101039</b></td>
+                        <td>Luna Maya</td>
+                        <td>Kelas B</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <tr>
+                        <td><b>230101040</b></td>
+                        <td>Nadiem Makarim</td>
+                        <td>Kelas C</td>
+                        <td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button> <button
+                                class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>
+                    </tr>
+                    <!-- <td align="center">
+                        <button class="btn-edit" onclick="pemicuEdit(this)">Edit</button>
+                        <button class="btn-delete" onclick="hapusBaris(this)">Hapus</button>
+                    </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function simpanMhs() {
+            const nim = document.getElementById("nim").value;
+            const nama = document.getElementById("namaMhs").value;
+            const kelas = document.getElementById("kelasPlot").value;
+            const editIndex = document.getElementById("editIndex").value;
+            const table = document.getElementById("mhsTable");
+
+            if (!nim || !nama) { alert("Lengkapi identitas NIM dan nama mahasiswa!"); return; }
+
+            if (editIndex === "") {
+                // MODE SIMPAN BARU
+                const row = table.insertRow();
+                row.innerHTML = `<td><b>${nim}</b></td><td>${nama}</td><td>${kelas}</td><td align="center"><button class="btn-edit" onclick="pemicuEdit(this)">Edit</button><button class="btn-delete" onclick="hapusBaris(this)">Hapus</button></td>`;
+            } else {
+                // MODE EDIT / UPDATE
+                const targetRow = table.rows[editIndex];
+                targetRow.cells[0].innerHTML = `<b>${nim}</b>`;
+                targetRow.cells[1].innerText = nama;
+                targetRow.cells[2].innerText = kelas;
+
+                document.getElementById("editIndex").value = "";
+                document.getElementById("formTitle").innerText = "Pendaftaran Mahasiswa Baru";
+                document.getElementById("btnSave").innerText = "➕ Daftarkan Mahasiswa";
+            }
+
+            document.getElementById("nim").value = "";
+            document.getElementById("namaMhs").value = "";
+        }
+
+        function pemicuEdit(btn) {
+            const row = btn.parentNode.parentNode;
+            document.getElementById("editIndex").value = row.rowIndex - 1;
+            document.getElementById("nim").value = row.cells[0].innerText;
+            document.getElementById("namaMhs").value = row.cells[1].innerText;
+            document.getElementById("kelasPlot").value = row.cells[2].innerText;
+
+            document.getElementById("formTitle").innerText = "Ubah Informasi Berkas Mahasiswa";
+            document.getElementById("btnSave").innerText = "💾 Perbarui Data Mahasiswa";
+        }
+
+        function hapusBaris(btn) {
+            if (confirm("Hapus berkas data mahasiswa ini?")) {
+                const r = btn.parentNode.parentNode;
+                r.parentNode.removeChild(r);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Absensi | AbsensiKu</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+    rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #f4f7fc;
+      display: flex;
+      min-height: 100vh;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    /* ------ SIDEBAR MODERN ------ */
+    .sidebar {
+      width: 270px;
+      background: white;
+      border-radius: 32px;
+      padding: 28px 20px;
+      box-shadow: 0 15px 40px -12px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0b1e33;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 8px;
+      margin-bottom: 36px;
+      letter-spacing: -0.3px;
+    }
+
+    .logo span {
+      font-size: 28px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      color: #5a6b7c;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 18px;
+      transition: 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background: #f0f5ff;
+      color: #2a6df4;
+    }
+
+    .menu-item.active {
+      background: #eef3fe;
+      color: #2a6df4;
+      font-weight: 600;
+    }
+
+    .menu-item.logout {
+      margin-top: auto;
+      color: #d1453b;
+    }
+
+    .menu-item.logout:hover {
+      background: #fff0ee;
+    }
+
+    /* ------ PROFIL SIDEBAR (bawah) ------ */
+    .sidebar-profile {
+      margin-top: 24px;
+      padding: 16px 12px;
+      background: #f9fbfd;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid #edf2f7;
+    }
+
+    .sidebar-profile .avatar {
+      width: 46px;
+      height: 46px;
+      background: #2a6df4;
+      color: white;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-profile .info h5 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0b1e33;
+    }
+
+    .sidebar-profile .info p {
+      font-size: 12px;
+      color: #6f7f92;
+      margin-top: 2px;
+    }
+
+    .menu-item {
+      text-decoration: none;
+    }
+
+    .menu-item,
+    .menu-item:hover,
+    .menu-item:active,
+    .menu-item:visited {
+      text-decoration: none;
+    }
+
+
+    /* ------ MAIN CONTENT ------ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-width: 0;
+    }
+
+    /* HEADER + PROFIL */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0b1e33;
+      letter-spacing: -0.5px;
+    }
+
+    .profile-chip {
+      background: white;
+      padding: 10px 22px 10px 18px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0b1e33;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid #edf2f7;
+    }
+
+    .profile-chip .avatar-mini {
+      width: 34px;
+      height: 34px;
+      background: #2a6df4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* CARD MATA KULIAH */
+    .matkul-card {
+      background: white;
+      border-radius: 28px;
+      padding: 24px 28px;
+      box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #eef2f6;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .matkul-card .icon {
+      width: 52px;
+      height: 52px;
+      background: #eef3fe;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .matkul-card .detail h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b1e33;
+    }
+
+    .matkul-card .detail p {
+      color: #5a6b7c;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .matkul-card .badge {
+      margin-left: auto;
+      background: #eaf6ed;
+      color: #1a8a4a;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* STATISTIK */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .stat-box {
+      background: white;
+      padding: 20px 22px;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      border: 1px solid #edf2f7;
+      transition: 0.2s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .stat-box .label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #5a6b7c;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .stat-box .value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .stat-box .value.green {
+      color: #1e9b50;
+    }
+
+    .stat-box .value.red {
+      color: #d1453b;
+    }
+
+    .stat-box .value.amber {
+      color: #c88a1a;
+    }
+
+    .stat-box .value.violet { 
+      color: #6d28d9; 
+    } 
+
+    .stat-box .value.blue {
+      color: #0b1e33;
+    }
+
+    /* TABEL AREA */
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #eef2f6;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-row select,
+    .filter-row input {
+      padding: 12px 18px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      background: #fafcff;
+      font-size: 14px;
+      color: #0b1e33;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .filter-row select:focus,
+    .filter-row input:focus {
+      border-color: #2a6df4;
+      box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.08);
+    }
+
+    .filter-row select {
+      min-width: 150px;
+    }
+
+    .filter-row input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid #edf2f7;
+    }
+
+    /* Styling untuk Radio Button agar rapi */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      /* Agar rapi jika layar menyempit */
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #1f2a3a;
+      padding: 6px 8px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .radio-item:hover {
+      background: #f4f7fc;
+    }
+
+    .radio-item input {
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      padding: 16px 18px;
+      color: #6f7f92;
+      font-weight: 600;
+      font-size: 13px;
+      background: #f9fbfd;
+      border-bottom: 1px solid #e6edf4;
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #f0f4f9;
+      color: #1f2a3a;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td select {
+      padding: 7px 12px;
+      border-radius: 12px;
+      border: 1px solid #dce3ec;
+      background: white;
+      font-size: 13px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    td select:focus {
+      border-color: #2a6df4;
+    }
+
+    .btn-action {
+      background: #0b1e33;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.2s;
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover {
+      background: #1a2f48;
+      transform: scale(1.01);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+        gap: 16px;
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 20px;
+        border-radius: 28px;
+      }
+
+      .menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .menu-item {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      .sidebar-profile {
+        display: none;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .matkul-card .badge {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo"><span> 🎓 </span> AkademiKu</div>
+
+    <div class="menu">
+      <a href="dashboard.html" class="menu-item">🏠 Dashboard</a>
+      <a href="input.html" class="menu-item">📝 Input Nilai</a>
+      <a href="laporan.html" class="menu-item">📊 Laporan Grafik</a>
+      <div class="menu-item logout" onclick="logout()">🚪 Logout</div>
+    </div>
+    <!-- profil di sidebar -->
+    <div class="sidebar-profile" id="sidebarProfile">
+      <div class="avatar" id="avatarInisial">D</div>
+      <div class="info">
+        <h5 id="sidebarNama">Dosen</h5>
+        <p id="sidebarMatkul">Mata Kuliah</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+      <h1>Laporan Absensi</h1>
+      <div class="profile-chip" id="profileChip">
+        <div class="avatar-mini" id="chipInisial">D</div>
+        <span id="chipNama">Dr. Dosen</span>
+      </div>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="stats">
+
+      <div class="stat-box">
+        <div class="label">✅ Hadir</div>
+        <div class="value green" id="hadirValue">0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="label"> 🩺 Sakit</div>
+        <div class="value blue" id="sakitValue">0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="label">📄 Izin</div>
+        <div class="value amber" id="izinValue">0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="label">❌ Alpha</div>
+        <div class="value red" id="alphaValue">0</div>
+      </div>
+
+    </div>
+
+    <!-- CARD GRAFIK -->
+    <div class="card">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        flex-wrap:wrap;
+        gap:10px;
+      ">
+        <h3 style="font-size:20px; color:#0b1e33;">
+          Visualisasi Kehadiran Mahasiswa
+        </h3>
+
+        <span style="
+          background:#eef3fe;
+          color:#2a6df4;
+          padding:8px 16px;
+          border-radius:30px;
+          font-size:13px;
+          font-weight:600;
+        ">
+          Data Absensi
+        </span>
+      </div>
+
+      <div style="height:380px;">
+        <canvas id="absensiChart"></canvas>
+      </div>
+
+    </div>
+
+  </div>
+
+ 
+
+<script>
+    // ===== DATA DOSEN =====
+    const login = JSON.parse(localStorage.getItem("dosenLogin")) || { nama: "Dr. Andi Pratama", matkul: "Pemrograman Web", inisial: "AP" };
+    if (!login.nama) {
+      window.location.href = "login.html";
+    }
+
+    // Ambil inisial
+    function getInitials(name) {
+      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'D';
+    }
+
+    const inisial = login.inisial || getInitials(login.nama);
+
+    // Isi elemen profil
+    document.getElementById('sidebarNama').innerText = login.nama;
+    document.getElementById('sidebarMatkul').innerText = login.matkul || 'Mata Kuliah';
+    document.getElementById('avatarInisial').innerText = inisial;
+
+    document.getElementById('chipNama').innerText = login.nama;
+    document.getElementById('chipInisial').innerText = inisial;
+
+    document.getElementById('matkulNama').innerText = login.matkul || 'Pemrograman Web Lanjut';
+    document.getElementById('matkulKode').innerText = 'Kode: MK' + (Math.floor(Math.random() * 900) + 100) + ' · SKS: 3';
+
+  // Ambil data localStorage
+  let data = JSON.parse(localStorage.getItem("riwayatAbsensi"));
+
+  console.log(data);
+
+  // Default data
+  let hadir = 0;
+  let sakit = 0;
+  let izin = 0;
+  let alpha = 0;
+
+  // Jika data tersedia
+  if (data && data.stats) {
+    hadir = data.stats.Hadir || 0;
+    sakit = data.stats.Sakit || 0;
+    izin = data.stats.Izin || 0;
+    alpha = data.stats.Alpha || 0;
+  }
+
+  // Tampilkan statistik
+  document.getElementById("hadirValue").innerText = hadir;
+  document.getElementById("sakitValue").innerText = sakit;
+  document.getElementById("izinValue").innerText = izin;
+  document.getElementById("alphaValue").innerText = alpha;
+
+  // Ambil canvas
+  const canvas = document.getElementById("absensiChart");
+
+  // Buat grafik
+  new Chart(canvas, {
+    type: "bar",
+
+    data: {
+      labels: ["Hadir", "Sakit", "Izin", "Alpha"],
+
+      datasets: [{
+        label: "Jumlah Mahasiswa",
+
+        data: [
+          hadir,
+          sakit,
+          izin,
+          alpha
+        ],
+
+        backgroundColor: [
+          "#22c55e",
+          "#3b82f6",
+          "#f59e0b",
+          "#ef4444"
+        ],
+
+        borderRadius: 10
+      }]
+    },
+
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("dosenLogin");
+    window.location.href = "login.html";
+  }
+
+</script>
+
+</body>
+</html>

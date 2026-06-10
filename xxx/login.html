@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Dosen</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#4f46e5,#6366f1,#818cf8);
+}
+
+.container{
+    width:380px;
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+
+.logo{
+    text-align:center;
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:8px;
+    color:#222;
+}
+
+.sub{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#4f46e5;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:#4f46e5;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#4338ca;
+}
+
+.info{
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
+    color:#888;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">🎓</div>
+
+    <h2>Login Dosen</h2>
+
+    <div class="sub">
+        Masuk menggunakan akun dosen
+    </div>
+
+    <label>Username</label>
+    <input
+        type="text"
+        id="username"
+        placeholder="Masukkan username"
+    >
+
+    <label>Password</label>
+    <input
+        type="password"
+        id="password"
+        placeholder="Masukkan password"
+    >
+
+    <button onclick="login()">
+        Masuk
+    </button>
+
+    <div class="info">
+        Sistem Akademik Dosen
+    </div>
+
+</div>
+
+<script>
+
+const akunDosen = [
+
+{ username:"ahmadfauzi", password:"123" },
+{ username:"dianutami", password:"123" },
+{ username:"hendrawijaya", password:"123" },
+{ username:"rinalestari", password:"123" },
+{ username:"budisantoso", password:"123" },
+{ username:"ekaputri", password:"123" },
+{ username:"irwanhidayat", password:"123" },
+{ username:"sitirahmawati", password:"123" },
+{ username:"agussetiawan", password:"123" },
+{ username:"dewikartika", password:"123" },
+{ username:"fajarnugroho", password:"123" },
+{ username:"megautami", password:"123" },
+{ username:"bambangsurya", password:"123" },
+{ username:"noviandriani", password:"123" },
+{ username:"rianhidayat", password:"123" },
+{ username:"fitriani", password:"123" },
+{ username:"andikapratama", password:"123" },
+{ username:"sriwahyuni", password:"123" },
+{ username:"taufikhidayat", password:"123" },
+{ username:"yuniarrahma", password:"123" }
+
+];
+
+function login(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const akun =
+        akunDosen.find(d =>
+            d.username === username &&
+            d.password === password
+        );
+
+    if(akun){
+
+        localStorage.setItem(
+            "usernameLogin",
+            username
+        );
+
+        window.location.href =
+            "dashboard-dosen.html";
+
+    }else{
+
+        alert(
+            "Username atau password salah"
+        );
+    }
+}
+
+</script>
+
+</body>
+</html>

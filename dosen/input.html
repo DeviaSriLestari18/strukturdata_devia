@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Input Nilai | AbsensiKu</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            display: flex;
+            min-height: 100vh;
+            padding: 24px;
+            gap: 24px;
+
+        }
+
+        /* ------ SIDEBAR MODERN ------ */
+        .sidebar {
+            width: 270px;
+            background: white;
+            border-radius: 32px;
+            padding: 28px 20px;
+            box-shadow: 0 15px 40px -12px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0b1e33;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 8px;
+            margin-bottom: 36px;
+            letter-spacing: -0.3px;
+        }
+
+        .logo span {
+            font-size: 28px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            color: #5a6b7c;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 18px;
+            transition: 0.2s ease;
+        }
+
+        .menu-item:hover {
+            background: #f0f5ff;
+            color: #2a6df4;
+        }
+
+        .menu-item.active {
+            background: #eef3fe;
+            color: #2a6df4;
+            font-weight: 600;
+        }
+
+        .menu-item.logout {
+            margin-top: auto;
+            color: #d1453b;
+        }
+
+        .menu-item.logout:hover {
+            background: #fff0ee;
+        }
+
+        /* ------ PROFIL SIDEBAR (bawah) ------ */
+        .sidebar-profile {
+            margin-top: 24px;
+            padding: 16px 12px;
+            background: #f9fbfd;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #edf2f7;
+        }
+
+        .sidebar-profile .avatar {
+            width: 46px;
+            height: 46px;
+            background: #2a6df4;
+            color: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-profile .info h5 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0b1e33;
+        }
+
+        .sidebar-profile .info p {
+            font-size: 12px;
+            color: #6f7f92;
+            margin-top: 2px;
+        }
+
+        .menu-item {
+            text-decoration: none;
+        }
+
+        .menu-item,
+        .menu-item:hover,
+        .menu-item:active,
+        .menu-item:visited {
+            text-decoration: none;
+        }
+
+
+        /* ------ MAIN CONTENT ------ */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        /* HEADER + PROFIL */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0b1e33;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-chip {
+            background: white;
+            padding: 10px 22px 10px 18px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #0b1e33;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+        }
+
+        .profile-chip .avatar-mini {
+            width: 34px;
+            height: 34px;
+            background: #2a6df4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* CARD MATA KULIAH */
+        .matkul-card {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef2f6;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .matkul-card .icon {
+            width: 52px;
+            height: 52px;
+            background: #eef3fe;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .matkul-card .detail h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0b1e33;
+        }
+
+        .matkul-card .detail p {
+            color: #5a6b7c;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .matkul-card .badge {
+            margin-left: auto;
+            background: #eaf6ed;
+            color: #1a8a4a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* STATISTIK */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px 22px;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+            transition: 0.2s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-box .label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #5a6b7c;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-box .value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .stat-box .value.green {
+            color: #1e9b50;
+        }
+
+        .stat-box .value.red {
+            color: #d1453b;
+        }
+
+        .stat-box .value.amber {
+            color: #c88a1a;
+        }
+
+        .stat-box .value.violet {
+            color: #6d28d9;
+        }
+
+        .stat-box .value.blue {
+            color: #0b1e33;
+        }
+
+        /* TABEL AREA */
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef2f6;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-row select,
+        .filter-row input {
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #fafcff;
+            font-size: 14px;
+            color: #0b1e33;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .filter-row select:focus,
+        .filter-row input:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.08);
+        }
+
+        .filter-row select {
+            min-width: 150px;
+        }
+
+        .filter-row input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid #edf2f7;
+        }
+
+        /* Styling untuk Radio Button agar rapi */
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            /* Agar rapi jika layar menyempit */
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #1f2a3a;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .radio-item:hover {
+            background: #f4f7fc;
+        }
+
+        .radio-item input {
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 18px;
+            color: #6f7f92;
+            font-weight: 600;
+            font-size: 13px;
+            background: #f9fbfd;
+            border-bottom: 1px solid #e6edf4;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f0f4f9;
+            color: #1f2a3a;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td select {
+            padding: 7px 12px;
+            border-radius: 12px;
+            border: 1px solid #dce3ec;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+        }
+
+        td select:focus {
+            border-color: #2a6df4;
+        }
+
+        .btn-action {
+            background: #0b1e33;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            background: #1a2f48;
+            transform: scale(1.01);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+                gap: 16px;
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 20px;
+                border-radius: 28px;
+            }
+
+            .menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .menu-item {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .sidebar-profile {
+                display: none;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .matkul-card .badge {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* ===== GLASSMORPHISM TABLE ===== */
+
+        .card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 30px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow:
+                0 8px 32px rgba(31, 38, 135, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        /* WRAPPER */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        th {
+            background: rgba(255, 255, 255, 0.18);
+            color: #5f6f85;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        /* BODY */
+        td {
+            padding: 18px 20px;
+            color: #1f2a3a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            transition: 0.25s ease;
+        }
+
+        /* HOVER */
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* INPUT NILAI */
+        td input {
+            width: 85px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            color: #1f2a3a;
+            font-size: 14px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        /* FOCUS */
+        td input:focus {
+            border-color: #2a6df4;
+            background: rgba(255, 255, 255, 0.28);
+            box-shadow: 0 0 0 4px rgba(42, 109, 244, 0.12);
+        }
+
+        /* NILAI AKHIR */
+        .nilai-box {
+            font-weight: 700;
+            color: #2a6df4;
+            font-size: 15px;
+        }
+
+        /* SCROLL */
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(42, 109, 244, 0.25);
+            border-radius: 20px;
+        }
+
+        body {
+            background:
+                linear-gradient(135deg, #dbeafe 0%, #eef2ff 50%, #f8fafc 100%);
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo"><span> 🎓 </span> AkademiKu</div>
+
+        <div class="menu">
+            <a href="dashboard.html" class="menu-item">🏠 Dashboard</a>
+            <a href="input.html" class="menu-item">📝 Input Nilai</a>
+            <a href="laporan.html" class="menu-item">📊 Laporan Grafik</a>
+            <div class="menu-item logout" onclick="logout()">🚪 Logout</div>
+        </div>
+        <!-- profil di sidebar -->
+        <div class="sidebar-profile" id="sidebarProfile">
+            <div class="avatar" id="avatarInisial">D</div>
+            <div class="info">
+                <h5 id="sidebarNama">Dosen</h5>
+                <p id="sidebarMatkul">Mata Kuliah</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Nilai Mahasiswa</h1>
+            <div class="profile-chip" id="profileChip">
+                <div class="avatar-mini" id="chipInisial">D</div>
+                <span id="chipNama">Dr. Dosen</span>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats">
+
+            <div class="stat-box">
+                <div class="label">👥 Total Mahasiswa</div>
+                <div class="value blue" id="statTotal">0</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="label">📈 Rata-rata Nilai</div>
+                <div class="value green" id="statHadir">0</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="label"> 🏆 Nilai Tertinggi</div>
+                <div class="value violet" id="statSakit">0</div>
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="card">
+
+            <div class="filter-row">
+
+                <select id="kelas" onchange="loadMahasiswa()">
+                    <option value="">Pilih Kelas</option>
+                    <option value="A">Kelas A</option>
+                    <option value="B">Kelas B</option>
+                    <option value="C">Kelas C</option>
+                </select>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Tugas</th>
+                            <th>UTS</th>
+                            <th>UAS</th>
+                            <th>Nilai Akhir</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbodyNilai"></tbody>
+
+                </table>
+
+            </div>
+
+            <button class="btn-action" onclick="simpanNilai()">
+                💾 Simpan Nilai
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+        // ===== DATA DOSEN =====
+        const login = JSON.parse(localStorage.getItem("dosenLogin")) || {
+            nama: "Dr. Andi Pratama",
+            matkul: "Pemrograman Web",
+            inisial: "AP"
+        };
+
+        if (!login.nama) {
+            window.location.href = "login.html";
+        }
+
+        // Ambil inisial
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(w => w[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase() || 'D';
+        }
+
+        const inisial = login.inisial || getInitials(login.nama);
+
+        // Isi profil
+        document.getElementById('sidebarNama').innerText = login.nama;
+        document.getElementById('sidebarMatkul').innerText =
+            login.matkul || 'Mata Kuliah';
+
+        document.getElementById('avatarInisial').innerText = inisial;
+
+        document.getElementById('chipNama').innerText = login.nama;
+        document.getElementById('chipInisial').innerText = inisial;
+
+
+        const dataMhs = {
+            A: [
+                { nim: "20241001", nama: "Devia Sri Lestari" },
+                { nim: "20241002", nama: "Rizki Rian Sopandi" },
+                { nim: "20241003", nama: "Putri Maharani" },
+                { nim: "20241004", nama: "Ahmad Fauzi" },
+                { nim: "20241005", nama: "Nabila Putri" },
+                { nim: "20241006", nama: "Fajar Nugraha" },
+                { nim: "20241007", nama: "Dinda Aulia" },
+                { nim: "20241008", nama: "Bagas Saputra" },
+                { nim: "20241009", nama: "Siti Rahma" },
+                { nim: "20241010", nama: "Yoga Pratama" }
+            ],
+
+            B: [
+                { nim: "20242001", nama: "Aulia Rahman" },
+                { nim: "20242002", nama: "Farah Nabila" },
+                { nim: "20242003", nama: "Iqbal Maulana" },
+                { nim: "20242004", nama: "Nadya Putri" },
+                { nim: "20242005", nama: "Rafi Akbar" },
+                { nim: "20242006", nama: "Tiara Maharani" },
+                { nim: "20242007", nama: "Dimas Saputra" },
+                { nim: "20242008", nama: "Maya Safitri" },
+                { nim: "20242009", nama: "Andika Prasetyo" },
+                { nim: "20242010", nama: "Salsa Putri" }
+            ],
+
+            C: [
+                { nim: "20243001", nama: "Aisyah Khairunnisa" },
+                { nim: "20243002", nama: "Bima Pratama" },
+                { nim: "20243003", nama: "Cindy Amelia" },
+                { nim: "20243004", nama: "Daffa Alfarizi" },
+                { nim: "20243005", nama: "Evelyn Putri" },
+                { nim: "20243006", nama: "Galih Permana" },
+                { nim: "20243007", nama: "Hana Oktaviani" },
+                { nim: "20243008", nama: "Kevin Prakoso" },
+                { nim: "20243009", nama: "Luthfi Ramadhan" },
+                { nim: "20243010", nama: "Nisa Aulia" }
+            ]
+        };
+
+        function loadMahasiswa() {
+
+            const kelas = document.getElementById("kelas").value;
+
+            const tbody = document.getElementById("tbodyNilai");
+
+            tbody.innerHTML = "";
+
+            if (!kelas) return;
+
+            dataMhs[kelas].forEach((m, index) => {
+
+                tbody.innerHTML += `
+
+          <tr>
+
+            <td><strong>${m.nim}</strong></td>
+
+            <td>${m.nama}</td>
+
+            <td>
+              <input type="number" min="0" max="100"
+              oninput="hitungNilai(this)">
+            </td>
+
+            <td>
+              <input type="number" min="0" max="100"
+              oninput="hitungNilai(this)">
+            </td>
+
+            <td>
+              <input type="number" min="0" max="100"
+              oninput="hitungNilai(this)">
+            </td>
+
+            <td class="nilai-box">0</td>
+
+          </tr>
+
+        `;
+            });
+
+            document.getElementById("totalMhs").innerText =
+                dataMhs[kelas].length;
+
+        }
+
+        function hitungNilai(el) {
+
+            const row = el.parentElement.parentElement;
+
+            const inputs = row.querySelectorAll("input");
+
+            const tugas = Number(inputs[0].value) || 0;
+            const uts = Number(inputs[1].value) || 0;
+            const uas = Number(inputs[2].value) || 0;
+
+            const akhir = Math.round(
+                (tugas * 0.3) +
+                (uts * 0.3) +
+                (uas * 0.4)
+            );
+
+            row.querySelector(".nilai-box").innerText = akhir;
+
+            updateStatistik();
+
+        }
+
+        function updateStatistik() {
+
+            const nilai = document.querySelectorAll(".nilai-box");
+
+            let total = 0;
+            let tertinggi = 0;
+
+            nilai.forEach(n => {
+
+                const val = Number(n.innerText);
+
+                total += val;
+
+                if (val > tertinggi) {
+                    tertinggi = val;
+                }
+
+            });
+
+            const rata = nilai.length
+                ? Math.round(total / nilai.length)
+                : 0;
+
+            document.getElementById("rataNilai").innerText = rata;
+
+            document.getElementById("nilaiTinggi").innerText = tertinggi;
+
+        }
+
+        function simpanNilai() {
+
+            const rows = document.querySelectorAll("#tbodyNilai tr");
+
+            let dataNilai = [];
+
+            rows.forEach(row => {
+
+                const cols = row.querySelectorAll("td");
+
+                dataNilai.push({
+
+                    nim: cols[0].innerText,
+
+                    nama: cols[1].innerText,
+
+                    tugas: cols[2].querySelector("input").value,
+
+                    uts: cols[3].querySelector("input").value,
+
+                    uas: cols[4].querySelector("input").value,
+
+                    akhir: cols[5].innerText
+
+                });
+
+            });
+
+            localStorage.setItem(
+                "dataNilai",
+                JSON.stringify(dataNilai)
+            );
+
+            alert("Nilai berhasil disimpan!");
+
+        }
+
+        function logout() {
+
+            localStorage.removeItem("dosenLogin");
+
+            window.location.href = "login.html";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
