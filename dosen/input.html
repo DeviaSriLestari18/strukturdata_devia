@@ -631,22 +631,18 @@
 
         <!-- STATS -->
         <div class="stats">
-
             <div class="stat-box">
                 <div class="label">👥 Total Mahasiswa</div>
                 <div class="value blue" id="statTotal">0</div>
             </div>
-
             <div class="stat-box">
                 <div class="label">📈 Rata-rata Nilai</div>
-                <div class="value green" id="statHadir">0</div>
+                <div class="value green" id="rataNilai">0</div> <!-- ubah id -->
             </div>
-
             <div class="stat-box">
-                <div class="label"> 🏆 Nilai Tertinggi</div>
-                <div class="value violet" id="statSakit">0</div>
+                <div class="label">🏆 Nilai Tertinggi</div>
+                <div class="value violet" id="nilaiTinggi">0</div> <!-- ubah id -->
             </div>
-
         </div>
 
         <!-- TABLE -->
@@ -704,29 +700,20 @@
             window.location.href = "login.html";
         }
 
-        // Ambil inisial
         function getInitials(name) {
-            return name
-                .split(' ')
-                .map(w => w[0])
-                .join('')
-                .slice(0, 2)
-                .toUpperCase() || 'D';
+            return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'D';
         }
 
         const inisial = login.inisial || getInitials(login.nama);
 
-        // Isi profil
+        // Isi profil sidebar & header
         document.getElementById('sidebarNama').innerText = login.nama;
-        document.getElementById('sidebarMatkul').innerText =
-            login.matkul || 'Mata Kuliah';
-
+        document.getElementById('sidebarMatkul').innerText = login.matkul || 'Mata Kuliah';
         document.getElementById('avatarInisial').innerText = inisial;
-
         document.getElementById('chipNama').innerText = login.nama;
         document.getElementById('chipInisial').innerText = inisial;
 
-
+        // Data mahasiswa per kelas
         const dataMhs = {
             A: [
                 { nim: "20241001", nama: "Devia Sri Lestari" },
@@ -740,7 +727,6 @@
                 { nim: "20241009", nama: "Siti Rahma" },
                 { nim: "20241010", nama: "Yoga Pratama" }
             ],
-
             B: [
                 { nim: "20242001", nama: "Aulia Rahman" },
                 { nim: "20242002", nama: "Farah Nabila" },
@@ -753,7 +739,6 @@
                 { nim: "20242009", nama: "Andika Prasetyo" },
                 { nim: "20242010", nama: "Salsa Putri" }
             ],
-
             C: [
                 { nim: "20243001", nama: "Aisyah Khairunnisa" },
                 { nim: "20243002", nama: "Bima Pratama" },
@@ -769,148 +754,88 @@
         };
 
         function loadMahasiswa() {
-
             const kelas = document.getElementById("kelas").value;
-
             const tbody = document.getElementById("tbodyNilai");
-
             tbody.innerHTML = "";
 
-            if (!kelas) return;
+            if (!kelas) {
+                document.getElementById("statTotal").innerText = "0";
+                updateStatistik();
+                return;
+            }
 
-            dataMhs[kelas].forEach((m, index) => {
-
-                tbody.innerHTML += `
-
-          <tr>
-
-            <td><strong>${m.nim}</strong></td>
-
-            <td>${m.nama}</td>
-
-            <td>
-              <input type="number" min="0" max="100"
-              oninput="hitungNilai(this)">
-            </td>
-
-            <td>
-              <input type="number" min="0" max="100"
-              oninput="hitungNilai(this)">
-            </td>
-
-            <td>
-              <input type="number" min="0" max="100"
-              oninput="hitungNilai(this)">
-            </td>
-
-            <td class="nilai-box">0</td>
-
-          </tr>
-
-        `;
+            const mahasiswa = dataMhs[kelas];
+            mahasiswa.forEach(m => {
+                const row = `
+                <tr>
+                    <td><strong>${m.nim}</strong></td>
+                    <td>${m.nama}</td>
+                    <td><input type="number" min="0" max="100" oninput="hitungNilai(this)"></td>
+                    <td><input type="number" min="0" max="100" oninput="hitungNilai(this)"></td>
+                    <td><input type="number" min="0" max="100" oninput="hitungNilai(this)"></td>
+                    <td class="nilai-box">0</td>
+                </tr>
+            `;
+                tbody.innerHTML += row;
             });
 
-            document.getElementById("totalMhs").innerText =
-                dataMhs[kelas].length;
-
+            document.getElementById("statTotal").innerText = mahasiswa.length;
+            updateStatistik();
         }
 
         function hitungNilai(el) {
-
-            const row = el.parentElement.parentElement;
-
-            const inputs = row.querySelectorAll("input");
-
-            const tugas = Number(inputs[0].value) || 0;
-            const uts = Number(inputs[1].value) || 0;
-            const uas = Number(inputs[2].value) || 0;
-
-            const akhir = Math.round(
-                (tugas * 0.3) +
-                (uts * 0.3) +
-                (uas * 0.4)
-            );
-
+            const row = el.closest('tr');
+            const inputs = row.querySelectorAll("input[type='number']");
+            const tugas = Number(inputs[0]?.value) || 0;
+            const uts = Number(inputs[1]?.value) || 0;
+            const uas = Number(inputs[2]?.value) || 0;
+            const akhir = Math.round((tugas * 0.3) + (uts * 0.3) + (uas * 0.4));
             row.querySelector(".nilai-box").innerText = akhir;
-
             updateStatistik();
-
         }
 
         function updateStatistik() {
-
-            const nilai = document.querySelectorAll(".nilai-box");
-
+            const nilaiBoxes = document.querySelectorAll(".nilai-box");
             let total = 0;
             let tertinggi = 0;
-
-            nilai.forEach(n => {
-
-                const val = Number(n.innerText);
-
+            nilaiBoxes.forEach(box => {
+                let val = Number(box.innerText);
                 total += val;
-
-                if (val > tertinggi) {
-                    tertinggi = val;
-                }
-
+                if (val > tertinggi) tertinggi = val;
             });
-
-            const rata = nilai.length
-                ? Math.round(total / nilai.length)
-                : 0;
-
+            let rata = nilaiBoxes.length ? Math.round(total / nilaiBoxes.length) : 0;
             document.getElementById("rataNilai").innerText = rata;
-
             document.getElementById("nilaiTinggi").innerText = tertinggi;
-
         }
 
         function simpanNilai() {
-
             const rows = document.querySelectorAll("#tbodyNilai tr");
-
+            if (rows.length === 0) {
+                alert("Tidak ada data. Pilih kelas terlebih dahulu.");
+                return;
+            }
             let dataNilai = [];
-
             rows.forEach(row => {
-
                 const cols = row.querySelectorAll("td");
-
-                dataNilai.push({
-
-                    nim: cols[0].innerText,
-
-                    nama: cols[1].innerText,
-
-                    tugas: cols[2].querySelector("input").value,
-
-                    uts: cols[3].querySelector("input").value,
-
-                    uas: cols[4].querySelector("input").value,
-
-                    akhir: cols[5].innerText
-
-                });
-
+                const nim = cols[0].innerText;
+                const nama = cols[1].innerText;
+                const tugas = cols[2].querySelector("input")?.value || 0;
+                const uts = cols[3].querySelector("input")?.value || 0;
+                const uas = cols[4].querySelector("input")?.value || 0;
+                const akhir = cols[5].innerText;
+                dataNilai.push({ nim, nama, tugas, uts, uas, akhir });
             });
-
-            localStorage.setItem(
-                "dataNilai",
-                JSON.stringify(dataNilai)
-            );
-
+            localStorage.setItem("dataNilai", JSON.stringify(dataNilai));
             alert("Nilai berhasil disimpan!");
-
+            updateStatistik(); // pastikan statistik terbaru setelah simpan
         }
 
         function logout() {
-
-            localStorage.removeItem("dosenLogin");
-
-            window.location.href = "login.html";
-
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
+                localStorage.removeItem("dosenLogin");
+                window.location.href = "login.html";
+            }
         }
-
     </script>
 
 </body>
