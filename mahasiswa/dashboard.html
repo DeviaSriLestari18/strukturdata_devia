@@ -140,6 +140,202 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-badge.hadir {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.izin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.sakit {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .status-badge.alpha {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .profile-card {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar i {
+            color: white;
+            font-size: 40px;
+        }
+
+        .profile-header h2 {
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .profile-header span {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .info-item span {
+            color: #64748b;
+        }
+
+        .info-item strong {
+            color: #1e293b;
+        }
+
+        .attendance-box {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .attendance-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .attendance-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .header-profile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #1e293b;
+        }
+
+        .header-left p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 12px 18px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 130px;
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .info-box strong {
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header-profile {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .info-box {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 
@@ -195,9 +391,30 @@
 
         function renderHeader() {
             document.getElementById('dynamicHeader').innerHTML = `
-            <div><h1>Halo, ${mahasiswa.nama}</h1><p>Monitoring Absensi Mahasiswa</p></div>
-            <div style="text-align:right"><strong>${mahasiswa.nim}</strong><br>${mahasiswa.kelas}</div>
-        `;
+    <div class="header-profile">
+        <div class="header-left">
+            <div class="avatar">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div>
+                <h1>Halo, ${mahasiswa.nama} 👋</h1>
+                <p>Selamat datang di Dashboard Mahasiswa</p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="info-box">
+                <span>NIM</span>
+                <strong>${mahasiswa.nim}</strong>
+            </div>
+
+            <div class="info-box">
+                <span>Kelas</span>
+                <strong>${mahasiswa.kelas}</strong>
+            </div>
+        </div>
+    </div>
+    `;
         }
 
         function renderDashboard() {
@@ -229,20 +446,134 @@
         }
 
         function renderAbsensi() {
-            document.getElementById('pageContent').innerHTML = `<div class="card-modern"><h2>Riwayat Absensi Lengkap</h2><p style="margin-top:10px">Menampilkan seluruh data absensi berdasarkan input dosen.</p></div>`;
+            const riwayat =
+                JSON.parse(localStorage.getItem("riwayatAbsensi")) || {};
+
+            const dataMahasiswa = riwayat[mahasiswa.nim] || [];
+
+            let totalHadir = 0;
+            let totalIzin = 0;
+            let totalSakit = 0;
+            let totalAlpha = 0;
+
+            dataMahasiswa.forEach(item => {
+                if (item.status === "Hadir") totalHadir++;
+                else if (item.status === "Izin") totalIzin++;
+                else if (item.status === "Sakit") totalSakit++;
+                else if (item.status === "Alpha") totalAlpha++;
+            });
+
+            let rows = "";
+
+            if (dataMahasiswa.length === 0) {
+                rows = `
+            <tr>
+                <td colspan="4" style="text-align:center;padding:20px">
+                    Belum ada data absensi
+                </td>
+            </tr>
+        `;
+            } else {
+                rows = dataMahasiswa.map(item => `
+            <tr>
+                <td>${item.tanggal}</td>
+                <td>${item.matkul}</td>
+                <td>${item.pertemuan}</td>
+                <td>
+                    <span class="status-badge ${item.status.toLowerCase()}">
+                        ${item.status}
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+            }
+
+            document.getElementById('pageContent').innerHTML = `
+        <div class="grid-stats">
+            <div class="card-modern stat-card">
+                <div>
+                    <h4>Hadir</h4>
+                    <div class="stat-number">${totalHadir}</div>
+                </div>
+                <i class="fas fa-check-circle fa-2x" style="color:#10b981"></i>
+            </div>
+
+            <div class="card-modern stat-card">
+                <div>
+                    <h4>Izin</h4>
+                    <div class="stat-number">${totalIzin}</div>
+                </div>
+                <i class="fas fa-envelope fa-2x" style="color:#f59e0b"></i>
+            </div>
+
+            <div class="card-modern stat-card">
+                <div>
+                    <h4>Sakit</h4>
+                    <div class="stat-number">${totalSakit}</div>
+                </div>
+                <i class="fas fa-notes-medical fa-2x" style="color:#8b5cf6"></i>
+            </div>
+        </div>
+
+        <div class="card-modern">
+            <h2 style="margin-bottom:20px">
+                📋 Riwayat Absensi Saya
+            </h2>
+
+            <table style="width:100%;border-collapse:collapse">
+                <thead>
+                    <tr style="background:#f8fafc">
+                        <th style="padding:12px">Tanggal</th>
+                        <th style="padding:12px">Mata Kuliah</th>
+                        <th style="padding:12px">Pertemuan</th>
+                        <th style="padding:12px">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        </div>
+    `;
         }
 
         function renderProfil() {
             document.getElementById('pageContent').innerHTML = `
-            <div class="card-modern" style="max-width:400px">
-                <h2>Profil Mahasiswa</h2>
-                <div style="margin-top:1.5rem">
-                    <p style="margin-bottom:10px"><strong>Nama:</strong> ${mahasiswa.nama}</p>
-                    <p style="margin-bottom:10px"><strong>NIM:</strong> ${mahasiswa.nim}</p>
-                    <p style="margin-bottom:10px"><strong>Kelas:</strong> ${mahasiswa.kelas}</p>
-                    <p><strong>Persentase Kehadiran:</strong> ${persentaseKehadiran}%</p>
-                </div>
-            </div>`;
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <h2>${mahasiswa.nama}</h2>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <span>NIM</span>
+                <strong>${mahasiswa.nim}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Kelas</span>
+                <strong>${mahasiswa.kelas}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Kehadiran</span>
+                <strong>${persentaseKehadiran}%</strong>
+            </div>
+        </div>
+
+        <div class="attendance-box">
+            <div class="attendance-text">
+                Persentase Kehadiran
+            </div>
+            <div class="attendance-value">
+                ${persentaseKehadiran}%
+            </div>
+        </div>
+    </div>`;
         }
 
         // Navigasi
@@ -262,7 +593,7 @@
         });
 
         function logout() {
-            if (confirm("Apakah kamu yakin ingin keluar?")) {
+            if (confirm("Apakah Anda yakin ingin keluar ?")) {
                 localStorage.removeItem("mahasiswaLogin");
                 window.location.href = "login.html";
             }

@@ -773,46 +773,39 @@
     }
 
     function simpanLocalStorage() {
+      const kelas = document.getElementById("kelas").value;
+      if (!kelas) {
+        alert("Pilih kelas terlebih dahulu!");
+        return;
+      }
 
-      // 🔥 KEY DIPISAH PER MATA KULIAH
-      const key = "dataAbsensiMahasiswa";
-
-      let dataAbsensiMahasiswa =
-        JSON.parse(localStorage.getItem(key)) || {};
+      const key = `dataAbsensiMahasiswa_${kelas}`; // 🔥 simpan per kelas
+      let dataAbsensiMahasiswa = JSON.parse(localStorage.getItem(key)) || {};
 
       document.querySelectorAll("#tbody tr").forEach(row => {
+        const nim = row.cells[0].innerText.trim();
+        const statusRadio = row.querySelector("input[type='radio']:checked");
+        if (!statusRadio) return;
+        const status = statusRadio.value;
 
-        const nim = row.cells[0].innerText;
-
-        const status = row.querySelector(
-          "input[type='radio']:checked"
-        ).value;
-
-        // init data kalau belum ada
         if (!dataAbsensiMahasiswa[nim]) {
           dataAbsensiMahasiswa[nim] = {
             totalHadir: 0,
             totalSakit: 0,
             totalIzin: 0,
-            totalAlpha: 0,
-            totalPertemuan: 0
+            totalAlpha: 0
           };
         }
 
-        // update pertemuan
-        dataAbsensiMahasiswa[nim].totalPertemuan++;
-
+        // Increment status yang dipilih
         if (status === "Hadir") dataAbsensiMahasiswa[nim].totalHadir++;
         if (status === "Sakit") dataAbsensiMahasiswa[nim].totalSakit++;
         if (status === "Izin") dataAbsensiMahasiswa[nim].totalIzin++;
         if (status === "Alpha") dataAbsensiMahasiswa[nim].totalAlpha++;
-
       });
 
-      // simpan ke localStorage
       localStorage.setItem(key, JSON.stringify(dataAbsensiMahasiswa));
-
-      alert("Data berhasil disimpan!");
+      alert(`Data absensi untuk kelas ${kelas} berhasil disimpan!`);
     }
 
 
@@ -827,10 +820,11 @@
       });
     }
 
-    // ===== LOGOUT =====
     function logout() {
-      localStorage.removeItem("dosenLogin");
-      window.location.href = "login.html";
+      if (confirm("Apakah Anda yakin ingin keluar ?")) {
+        localStorage.removeItem("dosenLogin");
+        window.location.href = "login.html";
+      }
     }
   </script>
 </body>

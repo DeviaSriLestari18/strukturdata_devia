@@ -8,7 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
     rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * {
       margin: 0;
@@ -291,9 +291,9 @@
       color: #c88a1a;
     }
 
-    .stat-box .value.violet { 
-      color: #6d28d9; 
-    } 
+    .stat-box .value.violet {
+      color: #6d28d9;
+    }
 
     .stat-box .value.blue {
       color: #0b1e33;
@@ -552,6 +552,19 @@
       </div>
 
     </div>
+    <!-- Tambahkan filter kelas -->
+    <div class="card" style="margin-bottom:0; padding:16px 28px;">
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <label style="font-weight:600;">Pilih Kelas:</label>
+        <select id="kelasFilter" onchange="loadChartData()"
+          style="padding:10px 16px; border-radius:16px; border:1px solid #e2e8f0;">
+          <option value="">-- Semua Kelas --</option>
+          <option value="A">Kelas A</option>
+          <option value="B">Kelas B</option>
+          <option value="C">Kelas C</option>
+        </select>
+      </div>
+    </div>
 
     <!-- CARD GRAFIK -->
     <div class="card">
@@ -588,107 +601,102 @@
 
   </div>
 
- 
 
-<script>
+
+  <script>
     // ===== DATA DOSEN =====
     const login = JSON.parse(localStorage.getItem("dosenLogin")) || { nama: "Dr. Andi Pratama", matkul: "Pemrograman Web", inisial: "AP" };
-    if (!login.nama) {
-      window.location.href = "login.html";
-    }
+    if (!login.nama) window.location.href = "login.html";
 
-    // Ambil inisial
     function getInitials(name) {
       return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'D';
     }
-
     const inisial = login.inisial || getInitials(login.nama);
 
-    // Isi elemen profil
     document.getElementById('sidebarNama').innerText = login.nama;
     document.getElementById('sidebarMatkul').innerText = login.matkul || 'Mata Kuliah';
     document.getElementById('avatarInisial').innerText = inisial;
-
     document.getElementById('chipNama').innerText = login.nama;
     document.getElementById('chipInisial').innerText = inisial;
 
-    document.getElementById('matkulNama').innerText = login.matkul || 'Pemrograman Web Lanjut';
-    document.getElementById('matkulKode').innerText = 'Kode: MK' + (Math.floor(Math.random() * 900) + 100) + ' · SKS: 3';
+    // ===== GRAFIK =====
+    let chartInstance;
 
-  // Ambil data localStorage
-  let data = JSON.parse(localStorage.getItem("riwayatAbsensi"));
-
-  console.log(data);
-
-  // Default data
-  let hadir = 0;
-  let sakit = 0;
-  let izin = 0;
-  let alpha = 0;
-
-  // Jika data tersedia
-  if (data && data.stats) {
-    hadir = data.stats.Hadir || 0;
-    sakit = data.stats.Sakit || 0;
-    izin = data.stats.Izin || 0;
-    alpha = data.stats.Alpha || 0;
-  }
-
-  // Tampilkan statistik
-  document.getElementById("hadirValue").innerText = hadir;
-  document.getElementById("sakitValue").innerText = sakit;
-  document.getElementById("izinValue").innerText = izin;
-  document.getElementById("alphaValue").innerText = alpha;
-
-  // Ambil canvas
-  const canvas = document.getElementById("absensiChart");
-
-  // Buat grafik
-  new Chart(canvas, {
-    type: "bar",
-
-    data: {
-      labels: ["Hadir", "Sakit", "Izin", "Alpha"],
-
-      datasets: [{
-        label: "Jumlah Mahasiswa",
-
-        data: [
-          hadir,
-          sakit,
-          izin,
-          alpha
-        ],
-
-        backgroundColor: [
-          "#22c55e",
-          "#3b82f6",
-          "#f59e0b",
-          "#ef4444"
-        ],
-
-        borderRadius: 10
-      }]
-    },
-
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-
-      scales: {
-        y: {
-          beginAtZero: true
+    function renderChart(hadir, sakit, izin, alpha) {
+      const canvas = document.getElementById("absensiChart");
+      if (!canvas) return;
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["Hadir", "Sakit", "Izin", "Alpha"],
+          datasets: [{
+            label: "Jumlah Mahasiswa",
+            data: [hadir, sakit, izin, alpha],
+            backgroundColor: ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444"],
+            borderRadius: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, stepSize: 1 } }
         }
-      }
+      });
     }
-  });
 
-  function logout() {
-    localStorage.removeItem("dosenLogin");
-    window.location.href = "login.html";
-  }
+    function loadChartData() {
+      const kelas = document.getElementById("kelasFilter").value;
+      let hadir = 0, sakit = 0, izin = 0, alpha = 0;
 
-</script>
+      if (kelas === "") {
+        // Jika pilih "Semua Kelas", jumlahkan dari semua kelas
+        const kelasList = ["A", "B", "C"];
+        kelasList.forEach(kls => {
+          const key = `dataAbsensiMahasiswa_${kls}`;
+          let data = JSON.parse(localStorage.getItem(key)) || {};
+          Object.values(data).forEach(item => {
+            hadir += item.totalHadir || 0;
+            sakit += item.totalSakit || 0;
+            izin += item.totalIzin || 0;
+            alpha += item.totalAlpha || 0;
+          });
+        });
+      } else {
+        // Ambil data hanya untuk kelas yang dipilih
+        const key = `dataAbsensiMahasiswa_${kelas}`;
+        let data = JSON.parse(localStorage.getItem(key)) || {};
+        Object.values(data).forEach(item => {
+          hadir += item.totalHadir || 0;
+          sakit += item.totalSakit || 0;
+          izin += item.totalIzin || 0;
+          alpha += item.totalAlpha || 0;
+        });
+      }
+
+      document.getElementById("hadirValue").innerText = hadir;
+      document.getElementById("sakitValue").innerText = sakit;
+      document.getElementById("izinValue").innerText = izin;
+      document.getElementById("alphaValue").innerText = alpha;
+      renderChart(hadir, sakit, izin, alpha);
+    }
+
+    // Panggil pertama kali (default: Semua Kelas)
+    loadChartData();
+
+    // Auto update jika ada perubahan dari halaman lain
+    window.addEventListener('storage', (e) => {
+      if (e.key && e.key.startsWith('dataAbsensiMahasiswa_')) {
+        loadChartData();
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("dosenLogin");
+      window.location.href = "login.html";
+    }
+  </script>
 
 </body>
+
 </html>
