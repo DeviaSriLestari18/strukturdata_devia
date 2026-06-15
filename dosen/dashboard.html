@@ -774,65 +774,47 @@
 
     function simpanLocalStorage() {
 
-      let stats = {
-        Hadir: 0,
-        Sakit: 0,
-        Izin: 0,
-        Alpha: 0
-      };
+      // 🔥 KEY DIPISAH PER MATA KULIAH
+      const key = "dataAbsensiMahasiswa";
 
-      // Ambil semua radio yang dipilih
-      const radioChecked = document.querySelectorAll(
-        "input[type='radio']:checked"
-      );
+      let dataAbsensiMahasiswa =
+        JSON.parse(localStorage.getItem(key)) || {};
 
-      // Hitung jumlah
-      radioChecked.forEach((radio) => {
+      document.querySelectorAll("#tbody tr").forEach(row => {
 
-        const value = radio.value;
+        const nim = row.cells[0].innerText;
 
-        if (value === "Hadir") {
-          stats.Hadir++;
+        const status = row.querySelector(
+          "input[type='radio']:checked"
+        ).value;
+
+        // init data kalau belum ada
+        if (!dataAbsensiMahasiswa[nim]) {
+          dataAbsensiMahasiswa[nim] = {
+            totalHadir: 0,
+            totalSakit: 0,
+            totalIzin: 0,
+            totalAlpha: 0,
+            totalPertemuan: 0
+          };
         }
 
-        else if (value === "Sakit") {
-          stats.Sakit++;
-        }
+        // update pertemuan
+        dataAbsensiMahasiswa[nim].totalPertemuan++;
 
-        else if (value === "Izin") {
-          stats.Izin++;
-        }
-
-        else if (value === "Alpha") {
-          stats.Alpha++;
-        }
+        if (status === "Hadir") dataAbsensiMahasiswa[nim].totalHadir++;
+        if (status === "Sakit") dataAbsensiMahasiswa[nim].totalSakit++;
+        if (status === "Izin") dataAbsensiMahasiswa[nim].totalIzin++;
+        if (status === "Alpha") dataAbsensiMahasiswa[nim].totalAlpha++;
 
       });
 
-      // Simpan data
-      const dataAbsensi = {
+      // simpan ke localStorage
+      localStorage.setItem(key, JSON.stringify(dataAbsensiMahasiswa));
 
-        tanggal: new Date().toLocaleDateString('id-ID'),
-
-        stats: {
-          Hadir: stats.Hadir,
-          Sakit: stats.Sakit,
-          Izin: stats.Izin,
-          Alpha: stats.Alpha
-        }
-
-      };
-
-      localStorage.setItem(
-        "riwayatAbsensi",
-        JSON.stringify(dataAbsensi)
-      );
-
-      console.log(dataAbsensi);
-
-      alert("Data telah disimpan!");
-
+      alert("Data berhasil disimpan!");
     }
+
 
     // ===== FILTER TABLE =====
     function filterTable() {
