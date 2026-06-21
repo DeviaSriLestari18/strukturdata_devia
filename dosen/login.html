@@ -137,6 +137,23 @@
       padding-top: 1.2rem;
     }
 
+    .demo-account {
+      margin-top: 1rem;
+      padding: 12px;
+      background: #f0f7ff;
+      border-radius: 12px;
+      font-size: 0.85rem;
+    }
+
+    .demo-account p {
+      margin: 4px 0;
+      color: #1a4b7a;
+    }
+
+    .demo-account strong {
+      color: #1e6ef0;
+    }
+
     @media (max-width: 500px) {
       .login-card {
         padding: 1.5rem;
@@ -174,6 +191,14 @@
         <button class="btn-login" type="submit">Masuk ke Dashboard</button>
       </form>
 
+      <!-- Info Akun Demo Dosen
+      <div class="demo-account">
+        <p><strong>📌 Akun Dosen:</strong></p>
+        <p>👨‍🏫 budi / 12345 → Pemrograman Web (MK301)</p>
+        <p>👩‍🏫 rina / 12345 → Basis Data (MK201)</p>
+        <p>👨‍🏫 andi / 12345 → Pemrograman Mobile (MK401) &amp; Algoritma (MK101)</p>
+      </div> -->
+
       <div class="info-note">
         © 2026 | Sistem Kehadiran
       </div>
@@ -181,27 +206,34 @@
   </div>
 
   <script>
+    // ===== DATA 3 DOSEN =====
     const dosen = [
       {
-        username: "andi",
+        username: "budi",
         password: "12345",
-        nama: "Andi Saputra",
-        matkul: ["Algoritma Pemrograman", "Struktur Data"],
-        semester: [1, 2]
+        nama: "Budi Santoso, S.Kom., M.Kom.",
+        matkul: ["Pemrograman Web"],
+        kodeMK: ["MK301"],
+        kelas: ["A", "B", "C"],
+        semester: [5, 6]
       },
       {
         username: "rina",
         password: "12345",
-        nama: "Rina Kartika",
+        nama: "Rina Kartika, S.Si., M.T.",
         matkul: ["Basis Data"],
+        kodeMK: ["MK201"],
+        kelas: ["A", "B", "C"],
         semester: [3, 4]
       },
       {
-        username: "budi",
+        username: "andi",
         password: "12345",
-        nama: "Budi Santoso",
-        matkul: ["Pemrograman Web"],
-        semester: [5, 6]
+        nama: "Andi Saputra, S.Kom., M.Cs.",
+        matkul: ["Pemrograman Mobile", "Algoritma Pemrograman"],
+        kodeMK: ["MK401", "MK101"],
+        kelas: ["A", "B", "C"],
+        semester: [1, 2, 3, 4]
       }
     ];
 
@@ -212,6 +244,8 @@
       let akun = dosen.find(d => d.username === username && d.password === password);
 
       if (akun) {
+        // Simpan kodeMK pertama sebagai default, tapi tetap simpan array lengkap
+        akun.kodeMK = akun.kodeMK[0] || "MK000";
         localStorage.setItem("dosenLogin", JSON.stringify(akun));
         window.location.href = "dashboard.html";
       } else {

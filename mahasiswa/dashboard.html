@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background: white;
@@ -80,7 +79,6 @@
             padding-top: 1rem;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 2rem;
@@ -104,7 +102,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        /* 3 Card Layout */
         .grid-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -131,7 +128,7 @@
             margin-bottom: 2rem;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width:900px) {
             .grid-stats {
                 grid-template-columns: 1fr;
             }
@@ -320,7 +317,7 @@
             font-size: 14px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width:768px) {
             .header-profile {
                 flex-direction: column;
                 align-items: flex-start;
@@ -343,9 +340,7 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="logo-area">
-                <div class="logo-icon">
-                    🎓
-                </div>
+                <div class="logo-icon">🎓</div>
                 <h2>AkademiKu</h2>
             </div>
             <div class="nav-menu">
@@ -365,218 +360,211 @@
     </div>
 
     <script>
-        const mahasiswa = JSON.parse(
-            localStorage.getItem("mahasiswaLogin")
-        );
-
-        const dataAbsensi =
-            JSON.parse(localStorage.getItem("dataAbsensiMahasiswa")) || {};
-
-        const absensi = dataAbsensi[mahasiswa.nim] || {
-            totalHadir: 0,
-            totalSakit: 0,
-            totalIzin: 0,
-            totalAlpha: 0,
-            totalPertemuan: 0
-        };
-
+        // ================== AMBIL DATA LOGIN MAHASISWA ==================
+        const mahasiswa = JSON.parse(localStorage.getItem("mahasiswaLogin"));
         if (!mahasiswa) {
             window.location.href = "login.html";
         }
 
-        const persentaseKehadiran =
-            absensi.totalPertemuan > 0
-                ? ((absensi.totalHadir / absensi.totalPertemuan) * 100).toFixed(1)
-                : 0;
+        // ================== FUNGSI BACA DATA ABSENSI DARI DOSEN ==================
+        function bacaDataAbsensiMahasiswa() {
+            const nim = mahasiswa.nim;
+            const kodeMKs = mahasiswa.kodeMK || []; // Array kodeMK
+            const kelas = mahasiswa.kelas;
+            const riwayat = [];
+            const total = { Hadir: 0, Sakit: 0, Izin: 0, Alpha: 0 };
+            let totalPertemuan = 0;
 
-        function renderHeader() {
-            document.getElementById('dynamicHeader').innerHTML = `
-    <div class="header-profile">
-        <div class="header-left">
-            <div class="avatar">
-                <i class="fas fa-user-graduate"></i>
-            </div>
-            <div>
-                <h1>Halo, ${mahasiswa.nama} 👋</h1>
-                <p>Selamat datang di Dashboard Mahasiswa</p>
-            </div>
-        </div>
+            // Dapatkan nama matkul dari kodeMK
+            const mapKodeToMatkul = {};
+            mahasiswa.matkul.forEach((mk, index) => {
+                mapKodeToMatkul[mahasiswa.kodeMK[index]] = mk;
+            });
 
-        <div class="header-right">
-            <div class="info-box">
-                <span>NIM</span>
-                <strong>${mahasiswa.nim}</strong>
-            </div>
+            console.log(`🔍 Mencari absensi untuk NIM: ${nim}, Kelas: ${kelas}, KodeMK:`, kodeMKs);
 
-            <div class="info-box">
-                <span>Kelas</span>
-                <strong>${mahasiswa.kelas}</strong>
-            </div>
-        </div>
-    </div>
-    `;
+            // Loop setiap kodeMK yang dimiliki mahasiswa
+            kodeMKs.forEach(kode => {
+                for (let p = 1; p <= 16; p++) {
+                    const keyData = `absensi_${kode}_${kelas}_pertemuan${p}`;
+                    const keyMeta = `absensi_${kode}_${kelas}_pertemuan${p}_meta`;
+                    const dataPertemuan = JSON.parse(localStorage.getItem(keyData)) || {};
+                    const meta = JSON.parse(localStorage.getItem(keyMeta)) || {};
+
+                    if (dataPertemuan.hasOwnProperty(nim)) {
+                        const status = dataPertemuan[nim];
+                        const namaMatkul = mapKodeToMatkul[kode] || kode;
+                        riwayat.push({
+                            pertemuan: p,
+                            tanggal: meta.tanggal || '-',
+                            status: status,
+                            matkul: namaMatkul,
+                            kodeMK: kode
+                        });
+                        if (total.hasOwnProperty(status)) {
+                            total[status]++;
+                        }
+                        totalPertemuan++;
+                    }
+                }
+            });
+
+            console.log(`✅ Ditemukan ${riwayat.length} data absensi`);
+            riwayat.sort((a, b) => a.pertemuan - b.pertemuan);
+
+            return { riwayat, total, totalPertemuan };
         }
 
+        // ================== RENDER HEADER ==================
+        function renderHeader() {
+            document.getElementById('dynamicHeader').innerHTML = `
+            <div class="header-profile">
+                <div class="header-left">
+                    <div class="avatar"><i class="fas fa-user-graduate"></i></div>
+                    <div>
+                        <h1>Halo, ${mahasiswa.nama} 👋</h1>
+                        <p>Selamat datang di Dashboard Mahasiswa</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="info-box"><span>NIM</span><strong>${mahasiswa.nim}</strong></div>
+                    <div class="info-box"><span>Kelas</span><strong>${mahasiswa.kelas || '-'}</strong></div>
+                </div>
+            </div>
+            `;
+        }
+
+        // ================== RENDER DASHBOARD ==================
         function renderDashboard() {
-            let matkulList = mahasiswa.matkul
-                ? mahasiswa.matkul.map(m => `• ${m}`).join('<br>')
-                : 'Belum ada mata kuliah';
+            const data = bacaDataAbsensiMahasiswa();
+            const total = data.total;
+            const totalPertemuan = data.totalPertemuan;
+            const persentase = totalPertemuan > 0 ? ((total.Hadir / totalPertemuan) * 100).toFixed(1) : 0;
+
+            let matkulList = mahasiswa.matkul ? mahasiswa.matkul.map(m => `• ${m}`).join('<br>') : 'Belum ada mata kuliah';
+
             document.getElementById('pageContent').innerHTML = `
             <div class="grid-stats">
-                <div class="card-modern stat-card"><div><h4>Total Kehadiran</h4><div class="stat-number">${absensi.totalHadir}</div></div><i class="fas fa-check-circle fa-2x" style="color:#10b981"></i></div>
-                <div class="card-modern stat-card"><div><h4>Persentase</h4><div class="stat-number">${persentaseKehadiran}%</div></div><i class="fas fa-chart-pie fa-2x" style="color:#2563eb"></i></div>
-                <div class="card-modern stat-card"><div><h4>Mata Kuliah</h4><div class="stat-number">${mahasiswa.matkul.length}</div></div><i class="fas fa-book fa-2x" style="color:#8b5cf6"></i></div>
+                <div class="card-modern stat-card">
+                    <div><h4>Total Kehadiran</h4><div class="stat-number">${total.Hadir}</div></div>
+                    <i class="fas fa-check-circle fa-2x" style="color:#10b981"></i>
+                </div>
+                <div class="card-modern stat-card">
+                    <div><h4>Persentase</h4><div class="stat-number">${persentase}%</div></div>
+                    <i class="fas fa-chart-pie fa-2x" style="color:#2563eb"></i>
+                </div>
+                <div class="card-modern stat-card">
+                    <div><h4>Mata Kuliah</h4><div class="stat-number">${mahasiswa.matkul ? mahasiswa.matkul.length : 0}</div></div>
+                    <i class="fas fa-book fa-2x" style="color:#8b5cf6"></i>
+                </div>
             </div>
             
             <div class="grid-content">
-                <div class="card-modern"><h3 style="margin-bottom:1rem">📈 Grafik Kehadiran</h3><canvas id="chartKehadiran"></canvas></div>
-                <div class="card-modern"><h3>📚 Mata Kuliah Saya</h3><p style="margin-top:1rem; line-height:2">${matkulList}</p></div>
+                <div class="card-modern">
+                    <h3 style="margin-bottom:1rem">📈 Grafik Kehadiran</h3>
+                    <canvas id="chartKehadiran"></canvas>
+                </div>
+                <div class="card-modern">
+                    <h3>📚 Mata Kuliah Saya</h3>
+                    <p style="margin-top:1rem; line-height:2">${matkulList}</p>
+                    <p style="margin-top:0.5rem; font-size:12px; color:#64748b">Kode MK: ${mahasiswa.kodeMK?.join(', ') || '-'}</p>
+                </div>
             </div>
-        `;
+            `;
 
             const ctx = document.getElementById('chartKehadiran').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Hadir', 'Izin', 'Sakit', 'Alpha'],
-                    datasets: [{ data: [absensi.totalHadir, absensi.totalIzin, absensi.totalSakit, absensi.totalAlpha], backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ef4444'] }]
+                    datasets: [{
+                        data: [total.Hadir, total.Izin, total.Sakit, total.Alpha],
+                        backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ef4444']
+                    }]
                 },
                 options: { plugins: { legend: { display: false } } }
             });
         }
 
+        // ================== RENDER HALAMAN ABSENSI ==================
         function renderAbsensi() {
-            const riwayat =
-                JSON.parse(localStorage.getItem("riwayatAbsensi")) || {};
+            const data = bacaDataAbsensiMahasiswa();
+            const riwayat = data.riwayat;
+            const total = data.total;
 
-            const dataMahasiswa = riwayat[mahasiswa.nim] || [];
-
-            let totalHadir = 0;
-            let totalIzin = 0;
-            let totalSakit = 0;
-            let totalAlpha = 0;
-
-            dataMahasiswa.forEach(item => {
-                if (item.status === "Hadir") totalHadir++;
-                else if (item.status === "Izin") totalIzin++;
-                else if (item.status === "Sakit") totalSakit++;
-                else if (item.status === "Alpha") totalAlpha++;
-            });
-
-            let rows = "";
-
-            if (dataMahasiswa.length === 0) {
-                rows = `
-            <tr>
-                <td colspan="4" style="text-align:center;padding:20px">
-                    Belum ada data absensi
-                </td>
-            </tr>
-        `;
+            let rows = '';
+            if (riwayat.length === 0) {
+                rows = `<tr><td colspan="4" style="text-align:center;padding:20px">Belum ada data absensi</td></tr>`;
             } else {
-                rows = dataMahasiswa.map(item => `
-            <tr>
-                <td>${item.tanggal}</td>
-                <td>${item.matkul}</td>
-                <td>${item.pertemuan}</td>
-                <td>
-                    <span class="status-badge ${item.status.toLowerCase()}">
-                        ${item.status}
-                    </span>
-                </td>
-            </tr>
-        `).join('');
+                rows = riwayat.map(item => `
+                    <tr>
+                        <td>${item.tanggal}</td>
+                        <td>${item.matkul}</td>
+                        <td>Pertemuan ${item.pertemuan}</td>
+                        <td><span class="status-badge ${item.status.toLowerCase()}">${item.status}</span></td>
+                    </tr>
+                `).join('');
             }
 
             document.getElementById('pageContent').innerHTML = `
-        <div class="grid-stats">
-            <div class="card-modern stat-card">
-                <div>
-                    <h4>Hadir</h4>
-                    <div class="stat-number">${totalHadir}</div>
+            <div class="grid-stats">
+                <div class="card-modern stat-card">
+                    <div><h4>Hadir</h4><div class="stat-number">${total.Hadir}</div></div>
+                    <i class="fas fa-check-circle fa-2x" style="color:#10b981"></i>
                 </div>
-                <i class="fas fa-check-circle fa-2x" style="color:#10b981"></i>
+                <div class="card-modern stat-card">
+                    <div><h4>Izin</h4><div class="stat-number">${total.Izin}</div></div>
+                    <i class="fas fa-envelope fa-2x" style="color:#f59e0b"></i>
+                </div>
+                <div class="card-modern stat-card">
+                    <div><h4>Sakit</h4><div class="stat-number">${total.Sakit}</div></div>
+                    <i class="fas fa-notes-medical fa-2x" style="color:#8b5cf6"></i>
+                </div>
             </div>
 
-            <div class="card-modern stat-card">
-                <div>
-                    <h4>Izin</h4>
-                    <div class="stat-number">${totalIzin}</div>
-                </div>
-                <i class="fas fa-envelope fa-2x" style="color:#f59e0b"></i>
+            <div class="card-modern">
+                <h2 style="margin-bottom:20px">📋 Riwayat Absensi Saya</h2>
+                <table style="width:100%;border-collapse:collapse">
+                    <thead>
+                        <tr style="background:#f8fafc">
+                            <th style="padding:12px">Tanggal</th>
+                            <th style="padding:12px">Mata Kuliah</th>
+                            <th style="padding:12px">Pertemuan</th>
+                            <th style="padding:12px">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
             </div>
-
-            <div class="card-modern stat-card">
-                <div>
-                    <h4>Sakit</h4>
-                    <div class="stat-number">${totalSakit}</div>
-                </div>
-                <i class="fas fa-notes-medical fa-2x" style="color:#8b5cf6"></i>
-            </div>
-        </div>
-
-        <div class="card-modern">
-            <h2 style="margin-bottom:20px">
-                📋 Riwayat Absensi Saya
-            </h2>
-
-            <table style="width:100%;border-collapse:collapse">
-                <thead>
-                    <tr style="background:#f8fafc">
-                        <th style="padding:12px">Tanggal</th>
-                        <th style="padding:12px">Mata Kuliah</th>
-                        <th style="padding:12px">Pertemuan</th>
-                        <th style="padding:12px">Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    ${rows}
-                </tbody>
-            </table>
-        </div>
-    `;
+            `;
         }
 
+        // ================== RENDER PROFIL ==================
         function renderProfil() {
+            const data = bacaDataAbsensiMahasiswa();
+            const totalPertemuan = data.totalPertemuan;
+            const persentase = totalPertemuan > 0 ? ((data.total.Hadir / totalPertemuan) * 100).toFixed(1) : 0;
+
             document.getElementById('pageContent').innerHTML = `
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-avatar">
-                <i class="fas fa-user-graduate"></i>
-            </div>
-            <h2>${mahasiswa.nama}</h2>
-        </div>
-
-        <div class="profile-info">
-            <div class="info-item">
-                <span>NIM</span>
-                <strong>${mahasiswa.nim}</strong>
-            </div>
-
-            <div class="info-item">
-                <span>Kelas</span>
-                <strong>${mahasiswa.kelas}</strong>
-            </div>
-
-            <div class="info-item">
-                <span>Kehadiran</span>
-                <strong>${persentaseKehadiran}%</strong>
-            </div>
-        </div>
-
-        <div class="attendance-box">
-            <div class="attendance-text">
-                Persentase Kehadiran
-            </div>
-            <div class="attendance-value">
-                ${persentaseKehadiran}%
-            </div>
-        </div>
-    </div>`;
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar"><i class="fas fa-user-graduate"></i></div>
+                    <h2>${mahasiswa.nama}</h2>
+                    <span>${mahasiswa.nim}</span>
+                </div>
+                <div class="profile-info">
+                    <div class="info-item"><span>NIM</span><strong>${mahasiswa.nim}</strong></div>
+                    <div class="info-item"><span>Kelas</span><strong>${mahasiswa.kelas || '-'}</strong></div>
+                    <div class="info-item"><span>Kehadiran</span><strong>${persentase}%</strong></div>
+                </div>
+                <div class="attendance-box">
+                    <div class="attendance-text">Persentase Kehadiran</div>
+                    <div class="attendance-value">${persentase}%</div>
+                </div>
+            </div>`;
         }
 
-        // Navigasi
+        // ================== NAVIGASI ==================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -593,13 +581,18 @@
         });
 
         function logout() {
-            if (confirm("Apakah Anda yakin ingin keluar ?")) {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
                 localStorage.removeItem("mahasiswaLogin");
                 window.location.href = "login.html";
             }
         }
 
-        renderHeader(); renderDashboard();
+        // ================== INISIALISASI ==================
+        renderHeader();
+        renderDashboard();
+
+        console.log("📋 Data Mahasiswa:", mahasiswa);
+        console.log("📊 Data Absensi:", bacaDataAbsensiMahasiswa());
     </script>
 </body>
 

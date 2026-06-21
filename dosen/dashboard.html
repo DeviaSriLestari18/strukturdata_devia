@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Absensi | AbsensiKu</title>
+  <title>Dashboard Dosen | Absensi Terintegrasi</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
     rel="stylesheet" />
@@ -24,7 +24,6 @@
       gap: 24px;
     }
 
-    /* ------ SIDEBAR MODERN ------ */
     .sidebar {
       width: 270px;
       background: white;
@@ -33,7 +32,6 @@
       box-shadow: 0 15px 40px -12px rgba(0, 0, 0, 0.06);
       display: flex;
       flex-direction: column;
-      transition: all 0.2s ease;
     }
 
     .logo {
@@ -43,13 +41,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding-left: 8px;
       margin-bottom: 36px;
-      letter-spacing: -0.3px;
-    }
-
-    .logo span {
-      font-size: 28px;
     }
 
     .menu {
@@ -69,7 +61,8 @@
       font-size: 15px;
       cursor: pointer;
       border-radius: 18px;
-      transition: 0.2s ease;
+      transition: 0.2s;
+      text-decoration: none;
     }
 
     .menu-item:hover {
@@ -92,52 +85,6 @@
       background: #fff0ee;
     }
 
-    .menu-item {
-      text-decoration: none;
-    }
-
-    .menu-item,
-    .menu-item:hover,
-    .menu-item:active,
-    .menu-item:visited {
-      text-decoration: none;
-    }
-
-    /* ===== SIDEBAR MENU ITEM ===== */
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      margin: 6px 0;
-      border-radius: 12px;
-      color: #4a5a6a;
-      text-decoration: none;
-      font-size: 14px;
-      transition: all 0.25s ease;
-    }
-
-    /* Hover effect */
-    .sidebar-menu a:hover {
-      background: #eef4ff;
-      color: #2a6df4;
-      transform: translateX(4px);
-    }
-
-    /* ACTIVE MENU (yang dipilih) */
-    .sidebar-menu a.active {
-      background: #2a6df4;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 12px;
-    }
-
-    /* ICON di menu */
-    .sidebar-menu a i {
-      font-size: 16px;
-    }
-
-    /* ===== PROFILE SIDEBAR ===== */
     .sidebar-profile {
       margin-top: 24px;
       padding: 14px;
@@ -147,16 +94,8 @@
       align-items: center;
       gap: 12px;
       border: 1px solid #e6eefc;
-      transition: 0.3s ease;
     }
 
-    /* hover profile */
-    .sidebar-profile:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    /* avatar */
     .sidebar-profile .avatar {
       width: 44px;
       height: 44px;
@@ -170,21 +109,17 @@
       font-size: 16px;
     }
 
-    /* info text */
     .sidebar-profile .info h5 {
       font-size: 14px;
       font-weight: 600;
       color: #0b1e33;
-      margin: 0;
     }
 
     .sidebar-profile .info p {
       font-size: 12px;
       color: #6f7f92;
-      margin: 2px 0 0;
     }
 
-    /* ------ MAIN CONTENT ------ */
     .main {
       flex: 1;
       display: flex;
@@ -193,7 +128,6 @@
       min-width: 0;
     }
 
-    /* HEADER + PROFIL */
     .header {
       display: flex;
       justify-content: space-between;
@@ -206,7 +140,6 @@
       font-size: 28px;
       font-weight: 700;
       color: #0b1e33;
-      letter-spacing: -0.5px;
     }
 
     .profile-chip {
@@ -218,7 +151,6 @@
       gap: 12px;
       font-weight: 600;
       font-size: 14px;
-      color: #0b1e33;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
       border: 1px solid #edf2f7;
     }
@@ -236,7 +168,6 @@
       font-size: 14px;
     }
 
-    /* CARD MATA KULIAH */
     .matkul-card {
       background: white;
       border-radius: 28px;
@@ -269,7 +200,6 @@
     .matkul-card .detail p {
       color: #5a6b7c;
       font-size: 14px;
-      margin-top: 2px;
     }
 
     .matkul-card .badge {
@@ -283,7 +213,6 @@
       white-space: nowrap;
     }
 
-    /* STATISTIK */
     .stats {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -294,14 +223,7 @@
       background: white;
       padding: 20px 22px;
       border-radius: 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
       border: 1px solid #edf2f7;
-      transition: 0.2s ease;
-    }
-
-    .stat-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
     }
 
     .stat-box .label {
@@ -340,7 +262,6 @@
       color: #0b1e33;
     }
 
-    /* TABEL AREA */
     .card {
       background: white;
       border-radius: 28px;
@@ -354,6 +275,7 @@
       gap: 14px;
       flex-wrap: wrap;
       margin-bottom: 24px;
+      align-items: center;
     }
 
     .filter-row select,
@@ -363,7 +285,6 @@
       border: 1px solid #e2e8f0;
       background: #fafcff;
       font-size: 14px;
-      color: #0b1e33;
       outline: none;
       transition: 0.2s;
     }
@@ -374,38 +295,28 @@
       box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.08);
     }
 
-    .filter-row select {
-      min-width: 150px;
-    }
-
-    .filter-row input {
-      flex: 1;
-      min-width: 180px;
-    }
-
     .table-wrapper {
       overflow-x: auto;
       border-radius: 18px;
       border: 1px solid #edf2f7;
+      max-height: 500px;
+      overflow-y: auto;
     }
 
-    /* Styling untuk Radio Button agar rapi */
     .radio-group {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
-      /* Agar rapi jika layar menyempit */
     }
 
     .radio-item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      font-size: 13px;
-      color: #1f2a3a;
-      padding: 6px 8px;
+      font-size: 12px;
+      padding: 4px 8px;
       border-radius: 8px;
       transition: 0.2s;
     }
@@ -426,37 +337,25 @@
 
     th {
       text-align: left;
-      padding: 16px 18px;
+      padding: 12px 16px;
       color: #6f7f92;
       font-weight: 600;
       font-size: 13px;
       background: #f9fbfd;
       border-bottom: 1px solid #e6edf4;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     td {
-      padding: 14px 18px;
+      padding: 10px 16px;
       border-bottom: 1px solid #f0f4f9;
       color: #1f2a3a;
     }
 
     tr:last-child td {
       border-bottom: none;
-    }
-
-    td select {
-      padding: 7px 12px;
-      border-radius: 12px;
-      border: 1px solid #dce3ec;
-      background: white;
-      font-size: 13px;
-      font-weight: 500;
-      outline: none;
-      cursor: pointer;
-    }
-
-    td select:focus {
-      border-color: #2a6df4;
     }
 
     .btn-action {
@@ -480,14 +379,26 @@
       transform: scale(1.01);
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
+    .pertemuan-box {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sort-indicator {
+      font-size: 11px;
+      color: #8a9aa8;
+      margin-left: 4px;
+    }
+
+    @media (max-width:1024px) {
       .stats {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width:768px) {
       body {
         padding: 16px;
         gap: 16px;
@@ -499,18 +410,11 @@
         flex-direction: row;
         flex-wrap: wrap;
         padding: 20px;
-        border-radius: 28px;
       }
 
       .menu {
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 6px;
-      }
-
-      .menu-item {
-        padding: 10px 16px;
-        font-size: 14px;
       }
 
       .sidebar-profile {
@@ -519,34 +423,21 @@
 
       .stats {
         grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-      }
-
-      .header h1 {
-        font-size: 22px;
-      }
-
-      .matkul-card .badge {
-        margin-left: 0;
-        width: 100%;
-        text-align: center;
       }
     }
   </style>
 </head>
 
 <body>
-
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="logo"><span> 🎓 </span> AkademiKu </div>
+    <div class="logo"><span>🎓</span> AkademiKu</div>
     <div class="menu">
-      <a href="dashboard.html" class="menu-item">🏠 Dashboard</a>
+      <a href="dashboard.html" class="menu-item active">🏠 Dashboard</a>
       <a href="input.html" class="menu-item">📝 Input Nilai</a>
       <a href="laporan.html" class="menu-item">📊 Laporan Grafik</a>
       <div class="menu-item logout" onclick="logout()">🚪 Logout</div>
     </div>
-    <!-- profil di sidebar -->
     <div class="sidebar-profile" id="sidebarProfile">
       <div class="avatar" id="avatarInisial">D</div>
       <div class="info">
@@ -558,7 +449,6 @@
 
   <!-- MAIN -->
   <div class="main">
-    <!-- HEADER -->
     <div class="header">
       <h1>Dashboard Dosen</h1>
       <div class="profile-chip" id="profileChip">
@@ -577,7 +467,7 @@
       <div class="badge">Semester Ganjil 2025/2026</div>
     </div>
 
-    <!-- STATISTIK -->
+    <!-- STATISTIK TOTAL -->
     <div class="stats">
       <div class="stat-box">
         <div class="label">👥 Total Mahasiswa</div>
@@ -588,14 +478,13 @@
         <div class="value green" id="statHadir">0</div>
       </div>
       <div class="stat-box">
-        <div class="label"> 🩺 Sakit</div>
+        <div class="label">🩺 Sakit</div>
         <div class="value violet" id="statSakit">0</div>
       </div>
       <div class="stat-box">
         <div class="label">📋 Izin</div>
         <div class="value amber" id="statIzin">0</div>
       </div>
-
       <div class="stat-box">
         <div class="label">❌ Alpha</div>
         <div class="value red" id="statAlpha">0</div>
@@ -611,7 +500,24 @@
           <option value="B">Kelas B</option>
           <option value="C">Kelas C</option>
         </select>
-        <input type="text" id="search" placeholder="Cari mahasiswa (NIM / Nama)..." onkeyup="filterTable()" />
+        <div class="pertemuan-box">
+          <label>Pertemuan ke-</label>
+          <select id="pertemuan" onchange="loadMahasiswa()">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+          <label>Tanggal</label>
+          <input type="date" id="tanggal" />
+        </div>
+        <input type="text" id="search" placeholder="Cari mahasiswa..." onkeyup="filterTable()" />
       </div>
 
       <div class="table-wrapper">
@@ -619,7 +525,7 @@
           <thead>
             <tr>
               <th>NIM</th>
-              <th>Nama</th>
+              <th>Nama <span class="sort-indicator"></span></th>
               <th>Status</th>
             </tr>
           </thead>
@@ -633,31 +539,29 @@
 
   <script>
     // ===== DATA DOSEN =====
-    const login = JSON.parse(localStorage.getItem("dosenLogin")) || { nama: "Dr. Andi Pratama", matkul: "Pemrograman Web", inisial: "AP" };
-    if (!login.nama) {
+    const login = JSON.parse(localStorage.getItem("dosenLogin"));
+    if (!login) {
       window.location.href = "login.html";
     }
 
-    // Ambil inisial
-    function getInitials(name) {
-      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'D';
+    // Pastikan kodeMK tersedia
+    if (!login.kodeMK) {
+      login.kodeMK = login.kodeMK?.[0] || "MK301";
+      localStorage.setItem("dosenLogin", JSON.stringify(login));
     }
 
-    const inisial = login.inisial || getInitials(login.nama);
+    const inisial = login.nama.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
-    // Isi elemen profil
+    // Isi profil
     document.getElementById('sidebarNama').innerText = login.nama;
-    document.getElementById('sidebarMatkul').innerText = login.matkul || 'Mata Kuliah';
+    document.getElementById('sidebarMatkul').innerText = login.matkul?.[0] || 'Mata Kuliah';
     document.getElementById('avatarInisial').innerText = inisial;
-
     document.getElementById('chipNama').innerText = login.nama;
     document.getElementById('chipInisial').innerText = inisial;
+    document.getElementById('matkulNama').innerText = login.matkul?.[0] || 'Pemrograman Web Lanjut';
+    document.getElementById('matkulKode').innerText = 'Kode: ' + (login.kodeMK || 'MK301') + ' · SKS: 3';
 
-    document.getElementById('matkulNama').innerText = login.matkul || 'Pemrograman Web Lanjut';
-    document.getElementById('matkulKode').innerText = 'Kode: MK' + (Math.floor(Math.random() * 900) + 100) + ' · SKS: 3';
-
-    // ===== DATA MAHASISWA =====
-    // ===== DATA MAHASISWA =====
+    // ===== DATA MAHASISWA (LENGKAP 10 PER KELAS) =====
     const dataMhs = {
       A: [
         { nim: "20241001", nama: "Devia Sri Lestari" },
@@ -671,7 +575,6 @@
         { nim: "20241009", nama: "Siti Rahma" },
         { nim: "20241010", nama: "Yoga Pratama" }
       ],
-
       B: [
         { nim: "20242001", nama: "Aulia Rahman" },
         { nim: "20242002", nama: "Farah Nabila" },
@@ -684,7 +587,6 @@
         { nim: "20242009", nama: "Andika Prasetyo" },
         { nim: "20242010", nama: "Salsa Putri" }
       ],
-
       C: [
         { nim: "20243001", nama: "Aisyah Khairunnisa" },
         { nim: "20243002", nama: "Bima Pratama" },
@@ -699,121 +601,130 @@
       ]
     };
 
+    const kodeMK = login.kodeMK || "MK301";
+
+    // ===== SET TANGGAL HARI INI =====
+    document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+
+    // ===== FUNGSI SORTING A-Z =====
+    function sortMahasiswa(data) {
+      return data.sort((a, b) => a.nama.localeCompare(b.nama, 'id', { sensitivity: 'base' }));
+    }
+
+    // ===== LOAD MAHASISWA =====
     function loadMahasiswa() {
       const kelas = document.getElementById("kelas").value;
+      const pertemuan = document.getElementById("pertemuan").value;
       const tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
 
       if (!kelas || !dataMhs[kelas]) {
         document.getElementById("statTotal").innerText = "0";
+        hitungStatistikTotal();
         return;
       }
 
-      dataMhs[kelas].forEach(m => {
+      // Ambil data yang sudah tersimpan untuk pertemuan ini
+      const key = `absensi_${kodeMK}_${kelas}_pertemuan${pertemuan}`;
+      const dataPertemuan = JSON.parse(localStorage.getItem(key)) || {};
+
+      // 🔥 SORTING A-Z berdasarkan NAMA
+      const sortedData = sortMahasiswa([...dataMhs[kelas]]);
+
+      sortedData.forEach(m => {
+        const statusTersimpan = dataPertemuan[m.nim] || "Hadir";
         tbody.innerHTML += `<tr>
-      <td><strong>${m.nim}</strong></td>
-      <td>${m.nama}</td>
-      <td>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="status${m.nim}" value="Hadir" checked> Hadir</label>
-          <label class="radio-item"><input type="radio" name="status${m.nim}" value="Sakit"> Sakit</label>
-          <label class="radio-item"><input type="radio" name="status${m.nim}" value="Izin"> Izin</label>
-          <label class="radio-item"><input type="radio" name="status${m.nim}" value="Alpha"> Alpha</label>
-        </div>
-      </td>
-    </tr>`;
+                    <td><strong>${m.nim}</strong></td>
+                    <td>${m.nama}</td>
+                    <td>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="status${m.nim}" value="Hadir" ${statusTersimpan === 'Hadir' ? 'checked' : ''}> Hadir</label>
+                            <label class="radio-item"><input type="radio" name="status${m.nim}" value="Sakit" ${statusTersimpan === 'Sakit' ? 'checked' : ''}> Sakit</label>
+                            <label class="radio-item"><input type="radio" name="status${m.nim}" value="Izin" ${statusTersimpan === 'Izin' ? 'checked' : ''}> Izin</label>
+                            <label class="radio-item"><input type="radio" name="status${m.nim}" value="Alpha" ${statusTersimpan === 'Alpha' ? 'checked' : ''}> Alpha</label>
+                        </div>
+                    </td>
+                </tr>`;
       });
 
-      document.getElementById("statTotal").innerText = dataMhs[kelas].length;
-      // reset statistik...
+      document.getElementById("statTotal").innerText = sortedData.length;
+      hitungStatistikTotal();
     }
 
-    // ===== SIMPAN & HITUNG STATISTIK =====
+    // ===== HITUNG STATISTIK TOTAL =====
+    function hitungStatistikTotal() {
+      const stats = { Hadir: 0, Sakit: 0, Izin: 0, Alpha: 0 };
+      const kelas = document.getElementById("kelas").value;
+      if (!kelas || !dataMhs[kelas]) {
+        document.getElementById("statHadir").innerText = "0";
+        document.getElementById("statSakit").innerText = "0";
+        document.getElementById("statIzin").innerText = "0";
+        document.getElementById("statAlpha").innerText = "0";
+        return;
+      }
 
-    function simpan() {
+      const semuaNim = dataMhs[kelas].map(m => m.nim);
 
-      let stats = {
-        Hadir: 0,
-        Sakit: 0,
-        Izin: 0,
-        Alpha: 0
-      };
+      for (let p = 1; p <= 16; p++) {
+        const key = `absensi_${kodeMK}_${kelas}_pertemuan${p}`;
+        const dataPertemuan = JSON.parse(localStorage.getItem(key)) || {};
+        semuaNim.forEach(nim => {
+          const status = dataPertemuan[nim];
+          if (status && stats.hasOwnProperty(status)) stats[status]++;
+        });
+      }
 
-      // Mengambil semua radio yang dicentang
-      document.querySelectorAll(
-        "input[type='radio']:checked"
-      ).forEach(s => {
-
-        const val = s.value;
-
-        if (stats.hasOwnProperty(val)) {
-          stats[val]++;
-        }
-
-      });
-
-      // Tampilkan statistik
       document.getElementById("statHadir").innerText = stats.Hadir;
       document.getElementById("statSakit").innerText = stats.Sakit;
       document.getElementById("statIzin").innerText = stats.Izin;
       document.getElementById("statAlpha").innerText = stats.Alpha;
-
-      // Simpan ke localStorage
-      simpanLocalStorage();
-
-      // Animasi tombol
-      const btn = document.querySelector('.btn-action');
-
-      btn.textContent = '✅ Disimpan!';
-
-      setTimeout(() => {
-        btn.innerHTML = '💾 Simpan Data Absensi';
-      }, 1200);
-
     }
 
-    function simpanLocalStorage() {
+    // ===== SIMPAN DATA =====
+    function simpan() {
       const kelas = document.getElementById("kelas").value;
+      const pertemuan = document.getElementById("pertemuan").value;
+      const tanggal = document.getElementById("tanggal").value;
+
       if (!kelas) {
         alert("Pilih kelas terlebih dahulu!");
         return;
       }
+      if (!tanggal) {
+        alert("Pilih tanggal!");
+        return;
+      }
 
-      const key = `dataAbsensiMahasiswa_${kelas}`; // 🔥 simpan per kelas
-      let dataAbsensiMahasiswa = JSON.parse(localStorage.getItem(key)) || {};
-
+      const dataPertemuan = {};
       document.querySelectorAll("#tbody tr").forEach(row => {
         const nim = row.cells[0].innerText.trim();
         const statusRadio = row.querySelector("input[type='radio']:checked");
         if (!statusRadio) return;
-        const status = statusRadio.value;
-
-        if (!dataAbsensiMahasiswa[nim]) {
-          dataAbsensiMahasiswa[nim] = {
-            totalHadir: 0,
-            totalSakit: 0,
-            totalIzin: 0,
-            totalAlpha: 0
-          };
-        }
-
-        // Increment status yang dipilih
-        if (status === "Hadir") dataAbsensiMahasiswa[nim].totalHadir++;
-        if (status === "Sakit") dataAbsensiMahasiswa[nim].totalSakit++;
-        if (status === "Izin") dataAbsensiMahasiswa[nim].totalIzin++;
-        if (status === "Alpha") dataAbsensiMahasiswa[nim].totalAlpha++;
+        dataPertemuan[nim] = statusRadio.value;
       });
 
-      localStorage.setItem(key, JSON.stringify(dataAbsensiMahasiswa));
-      alert(`Data absensi untuk kelas ${kelas} berhasil disimpan!`);
-    }
+      // 🔥 SIMPAN DENGAN KEY: absensi_{kodeMK}_{kelas}_pertemuan{p}
+      const key = `absensi_${kodeMK}_${kelas}_pertemuan${pertemuan}`;
+      localStorage.setItem(key, JSON.stringify(dataPertemuan));
 
+      // Simpan meta data
+      const metaKey = `absensi_${kodeMK}_${kelas}_pertemuan${pertemuan}_meta`;
+      localStorage.setItem(metaKey, JSON.stringify({ tanggal, kelas, pertemuan }));
+
+      console.log("✅ Data tersimpan:", key, dataPertemuan);
+      hitungStatistikTotal();
+
+      const btn = document.querySelector('.btn-action');
+      btn.innerHTML = '✅ Disimpan!';
+      setTimeout(() => btn.innerHTML = '💾 Simpan Data Absensi', 1200);
+
+      alert(`✅ Data pertemuan ${pertemuan} untuk kelas ${kelas} berhasil disimpan!`);
+    }
 
     // ===== FILTER TABLE =====
     function filterTable() {
       const input = document.getElementById("search").value.toLowerCase();
-      const rows = document.querySelectorAll("#tbody tr");
-      rows.forEach(row => {
+      document.querySelectorAll("#tbody tr").forEach(row => {
         const nim = row.cells[0]?.innerText.toLowerCase() || '';
         const nama = row.cells[1]?.innerText.toLowerCase() || '';
         row.style.display = (nim.includes(input) || nama.includes(input)) ? '' : 'none';
@@ -821,11 +732,16 @@
     }
 
     function logout() {
-      if (confirm("Apakah Anda yakin ingin keluar ?")) {
+      if (confirm("Yakin keluar?")) {
         localStorage.removeItem("dosenLogin");
         window.location.href = "login.html";
       }
     }
+
+    // ===== INISIALISASI =====
+    window.onload = function () {
+      document.getElementById("pertemuan").value = "1";
+    };
   </script>
 </body>
 
