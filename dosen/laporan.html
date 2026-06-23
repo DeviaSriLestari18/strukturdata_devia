@@ -646,41 +646,46 @@
     }
 
     function loadChartData() {
-      const kelas = document.getElementById("kelasFilter").value;
+      const kelasFilter = document.getElementById("kelasFilter").value;
       let hadir = 0, sakit = 0, izin = 0, alpha = 0;
 
-      if (kelas === "") {
-        // Jika pilih "Semua Kelas", jumlahkan dari semua kelas
-        const kelasList = ["A", "B", "C"];
-        kelasList.forEach(kls => {
-          const key = `dataAbsensiMahasiswa_${kls}`;
-          let data = JSON.parse(localStorage.getItem(key)) || {};
-          Object.values(data).forEach(item => {
-            hadir += item.totalHadir || 0;
-            sakit += item.totalSakit || 0;
-            izin += item.totalIzin || 0;
-            alpha += item.totalAlpha || 0;
-          });
-        });
-      } else {
-        // Ambil data hanya untuk kelas yang dipilih
-        const key = `dataAbsensiMahasiswa_${kelas}`;
-        let data = JSON.parse(localStorage.getItem(key)) || {};
-        Object.values(data).forEach(item => {
-          hadir += item.totalHadir || 0;
-          sakit += item.totalSakit || 0;
-          izin += item.totalIzin || 0;
-          alpha += item.totalAlpha || 0;
-        });
-      }
+      // Ambil semua key di localStorage
+      const keys = Object.keys(localStorage);
+      // Filter hanya key absensi (bukan meta)
+      const absensiKeys = keys.filter(k => k.startsWith('absensi_') && !k.endsWith('_meta'));
 
+      absensiKeys.forEach(key => {
+        // Ekstrak kelas dari key: "absensi_MK401_A_pertemuan1" -> "A"
+        const parts = key.split('_');
+        if (parts.length < 4) return; // format tidak sesuai
+        const kelas = parts[2]; // indeks ke-2
+
+        // Jika filter kelas aktif dan tidak cocok, lewati
+        if (kelasFilter && kelas !== kelasFilter) return;
+
+        try {
+          const data = JSON.parse(localStorage.getItem(key));
+          // data adalah objek { NIM: "Hadir", NIM2: "Sakit", ... }
+          Object.values(data).forEach(status => {
+            if (status === "Hadir") hadir++;
+            else if (status === "Sakit") sakit++;
+            else if (status === "Izin") izin++;
+            else if (status === "Alpha") alpha++;
+            // jika ada status lain (misal "izin" huruf kecil), tambahkan else if
+          });
+        } catch (e) {
+          console.warn('Gagal parse key:', key, e);
+        }
+      });
+
+      // Update tampilan statistik
       document.getElementById("hadirValue").innerText = hadir;
       document.getElementById("sakitValue").innerText = sakit;
       document.getElementById("izinValue").innerText = izin;
       document.getElementById("alphaValue").innerText = alpha;
+
       renderChart(hadir, sakit, izin, alpha);
     }
-
     // Panggil pertama kali (default: Semua Kelas)
     loadChartData();
 

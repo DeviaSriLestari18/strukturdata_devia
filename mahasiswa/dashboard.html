@@ -366,55 +366,70 @@
             window.location.href = "login.html";
         }
 
-        // ================== FUNGSI BACA DATA ABSENSI DARI DOSEN ==================
         function bacaDataAbsensiMahasiswa() {
             const nim = mahasiswa.nim;
-            const kodeMKs = mahasiswa.kodeMK || []; // Array kodeMK
             const kelas = mahasiswa.kelas;
             const riwayat = [];
             const total = { Hadir: 0, Sakit: 0, Izin: 0, Alpha: 0 };
             let totalPertemuan = 0;
 
-            // Dapatkan nama matkul dari kodeMK
-            const mapKodeToMatkul = {};
-            mahasiswa.matkul.forEach((mk, index) => {
-                mapKodeToMatkul[mahasiswa.kodeMK[index]] = mk;
-            });
+            // Ambil semua key di localStorage
+            const keys = Object.keys(localStorage);
+            // Filter key absensi (bukan meta)
+            const absensiKeys = keys.filter(k => k.startsWith('absensi_') && !k.endsWith('_meta'));
 
-            console.log(`🔍 Mencari absensi untuk NIM: ${nim}, Kelas: ${kelas}, KodeMK:`, kodeMKs);
+            console.log(`🔍 Mencari absensi untuk NIM: ${nim}, Kelas: ${kelas}`);
 
-            // Loop setiap kodeMK yang dimiliki mahasiswa
-            kodeMKs.forEach(kode => {
-                for (let p = 1; p <= 16; p++) {
-                    const keyData = `absensi_${kode}_${kelas}_pertemuan${p}`;
-                    const keyMeta = `absensi_${kode}_${kelas}_pertemuan${p}_meta`;
-                    const dataPertemuan = JSON.parse(localStorage.getItem(keyData)) || {};
-                    const meta = JSON.parse(localStorage.getItem(keyMeta)) || {};
+            absensiKeys.forEach(key => {
+                // Ekstrak kodeMK dan kelas dari key: "absensi_MK401_A_pertemuan1"
+                const parts = key.split('_');
+                if (parts.length < 4) return;
+                const kodeMK = parts[1];
+                const kelasKey = parts[2];
+                // Ambil nomor pertemuan (bagian setelah "pertemuan")
+                const pertemuanMatch = key.match(/pertemuan(\d+)/);
+                if (!pertemuanMatch) return;
+                const pertemuan = parseInt(pertemuanMatch[1]);
 
-                    if (dataPertemuan.hasOwnProperty(nim)) {
-                        const status = dataPertemuan[nim];
-                        const namaMatkul = mapKodeToMatkul[kode] || kode;
+                // Hanya proses jika kelas cocok
+                if (kelasKey !== kelas) return;
+
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data.hasOwnProperty(nim)) {
+                        const status = data[nim];
+                        // Ambil meta untuk tanggal
+                        const metaKey = key + '_meta';
+                        const meta = JSON.parse(localStorage.getItem(metaKey)) || {};
+                        const tanggal = meta.tanggal || '-';
+
+                        // Cari nama matkul dari data mahasiswa (jika ada)
+                        let namaMatkul = kodeMK;
+                        if (mahasiswa.kodeMK && mahasiswa.matkul) {
+                            const idx = mahasiswa.kodeMK.indexOf(kodeMK);
+                            if (idx !== -1) namaMatkul = mahasiswa.matkul[idx];
+                        }
+
                         riwayat.push({
-                            pertemuan: p,
-                            tanggal: meta.tanggal || '-',
+                            pertemuan: pertemuan,
+                            tanggal: tanggal,
                             status: status,
                             matkul: namaMatkul,
-                            kodeMK: kode
+                            kodeMK: kodeMK
                         });
-                        if (total.hasOwnProperty(status)) {
-                            total[status]++;
-                        }
+
+                        if (total.hasOwnProperty(status)) total[status]++;
                         totalPertemuan++;
                     }
+                } catch (e) {
+                    console.warn('Gagal parse key:', key, e);
                 }
             });
 
             console.log(`✅ Ditemukan ${riwayat.length} data absensi`);
             riwayat.sort((a, b) => a.pertemuan - b.pertemuan);
-
             return { riwayat, total, totalPertemuan };
         }
-
         // ================== RENDER HEADER ==================
         function renderHeader() {
             document.getElementById('dynamicHeader').innerHTML = `

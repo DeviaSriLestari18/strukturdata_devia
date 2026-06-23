@@ -158,6 +158,7 @@
       .login-card {
         padding: 1.5rem;
       }
+
       h1 {
         font-size: 1.6rem;
       }
@@ -244,12 +245,15 @@
       let akun = dosen.find(d => d.username === username && d.password === password);
 
       if (akun) {
-        // Simpan kodeMK pertama sebagai default, tapi tetap simpan array lengkap
         akun.kodeMK = akun.kodeMK[0] || "MK000";
+
         localStorage.setItem("dosenLogin", JSON.stringify(akun));
+
+        alert(`✅ Selamat datang, ${akun.nama}! Login berhasil.`);
+
         window.location.href = "dashboard.html";
       } else {
-        alert("Username atau password salah!");
+        alert("❌ Username atau Password salah!");
       }
     }
   </script>

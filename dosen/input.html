@@ -764,7 +764,9 @@
                 return;
             }
 
-            const mahasiswa = dataMhs[kelas];
+            const mahasiswa = [...dataMhs[kelas]].sort((a, b) =>
+                a.nama.localeCompare(b.nama)
+            );
             mahasiswa.forEach(m => {
                 const row = `
                 <tr>

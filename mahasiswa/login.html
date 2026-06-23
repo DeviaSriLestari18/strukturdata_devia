@@ -259,6 +259,7 @@
             if (user) {
                 // Simpan data login
                 localStorage.setItem("mahasiswaLogin", JSON.stringify(user));
+                alert("✅ Anda berhasil login!");
                 window.location.href = "dashboard.html";
             } else {
                 alert("Username atau Password salah!");
